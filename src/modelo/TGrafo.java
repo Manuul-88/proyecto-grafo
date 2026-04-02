@@ -12,58 +12,71 @@ public class TGrafo {
         visitados = new boolean[n];
         recorrido = "";
         
-        for (int i=0; i<n; i++){
-        listaAdy[i] = new TLista();
-        visitados[i] = false;
+        for (int i = 0; i < n; i++){
+            listaAdy[i] = new TLista();
+            visitados[i] = false;
         }
     }
     
-    public void agregaArista(int origen, int destino){
-        if(origen <1 || origen>n || destino<1 ||destino>n){
-            System.out.println("Vertice fuera de rango");
-            return;
+    public boolean agregaArista(int origen, int destino){
+        if(origen < 1 || origen > n || destino < 1 || destino > n){
+            return false;
         }
-        if(!listaAdy[origen-1].buscar(destino))
-            listaAdy[origen-1].insertarFinal(destino);
-        if(!listaAdy[destino-1].buscar(origen))
-            listaAdy[destino-1].insertarFinal(origen);
+        
+        boolean agregada = false;
+        
+        if(!listaAdy[origen - 1].buscar(destino)){
+            listaAdy[origen - 1].insertarFinal(destino);
+            agregada = true;
+        }
+        
+        if(!listaAdy[destino - 1].buscar(origen)){
+            listaAdy[destino - 1].insertarFinal(origen);
+            agregada = true;
+        }
+        
+        return agregada;
     }
     
-    public void muestraListaAdy(){
-        System.out.println(obtieneListaAdy());
-    }
-
     public String obtieneListaAdy(){
         String cad = "\nListas de adyacencia:\n";
-        for(int i=0; i<n; i++){
-            cad += (i+1) + " -> " + listaAdy[i].cadenaLista() + "\n";
+        
+        for(int i = 0; i < n; i++){
+            cad += (i + 1) + " -> " + listaAdy[i].cadenaLista() + "\n";
         }
+        
         return cad;
     }
-    
+
     private void bpf(int inicial){
         visitados[inicial] = true;
-        System.out.printf("%d\t", inicial + 1);
+        recorrido += (inicial + 1) + " ";
         
         TNodo p = listaAdy[inicial].getCabecera().getSiguiente();
         
-        while(p!=null){
-            int ady = p.getDato()-1;
-            if (!visitados[ady])
+        while(p != null){
+            int ady = p.getDato() - 1;
+            
+            if(!visitados[ady]){
                 bpf(ady);
+            }
+            
             p = p.getSiguiente();
         }
     }
-    
-    public void busquedaProfundidad(int inicial){
-        if(inicial<1||inicial>n){
-            System.out.println("Vertice inicial fuera de rango");
-            return;
+
+    public String busquedaProfundidad(int inicial){
+        if(inicial < 1 || inicial > n){
+            return "Vertice inicial fuera de rango";
         }
-        for(int i=0; i<n; i++)
+        
+        for(int i = 0; i < n; i++){
             visitados[i] = false;
-        recorrido="";
+        }
+        
+        recorrido = "";
         bpf(inicial - 1);
-        System.out.println();
+        
+        return recorrido;
     }
 }
