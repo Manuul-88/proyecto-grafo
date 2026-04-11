@@ -1,82 +1,109 @@
+//TGrafo
 package modelo;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class TGrafo {
-    private TLista listaAdy[];
-    private int n;
-    private boolean visitados[];
+    private HashMap<String, TLista> listaAdy;
+    private HashMap<String, Boolean> visitados;
     private String recorrido;
     
-    public TGrafo(int n){
-        this.n = n;
-        listaAdy = new TLista[n];
-        visitados = new boolean[n];
+    public TGrafo() {
+        listaAdy = new HashMap<>();
+        visitados = new HashMap<>();
         recorrido = "";
-        
-        for (int i = 0; i < n; i++){
-            listaAdy[i] = new TLista();
-            visitados[i] = false;
-        }
     }
-    
-    public boolean agregaArista(int origen, int destino){
-        if(origen < 1 || origen > n || destino < 1 || destino > n){
+
+    public boolean agregarNodo(String nombre) {
+        nombre = normalizar(nombre);
+        if (nombre.isEmpty()) {
             return false;
         }
-        
+        if (listaAdy.containsKey(nombre)) {
+            return false;
+        }
+        listaAdy.put(nombre, new TLista());
+        visitados.put(nombre, false);
+        return true;
+    }
+
+    public boolean existeNodo(String nombre) {
+        nombre = normalizar(nombre);
+        return listaAdy.containsKey(nombre);
+    }
+
+    public boolean agregaArista(String origen, String destino) {
+        origen = normalizar(origen);
+        destino = normalizar(destino);
+        if (origen.isEmpty() || destino.isEmpty()) {
+            return false;
+        }
+        if (!listaAdy.containsKey(origen) || !listaAdy.containsKey(destino)) {
+            return false;
+        }
+        if (origen.equalsIgnoreCase(destino)) {
+            return false;
+        }
         boolean agregada = false;
-        
-        if(!listaAdy[origen - 1].buscar(destino)){
-            listaAdy[origen - 1].insertarFinal(destino);
+        if (!listaAdy.get(origen).buscar(destino)) {
+            listaAdy.get(origen).insertarFinal(destino);
             agregada = true;
         }
-        
-        if(!listaAdy[destino - 1].buscar(origen)){
-            listaAdy[destino - 1].insertarFinal(origen);
+        if (!listaAdy.get(destino).buscar(origen)) {
+            listaAdy.get(destino).insertarFinal(origen);
             agregada = true;
         }
-        
         return agregada;
     }
-    
-    public String obtieneListaAdy(){
-        String cad = "\nListas de adyacencia:\n";
-        
-        for(int i = 0; i < n; i++){
-            cad += (i + 1) + " -> " + listaAdy[i].cadenaLista() + "\n";
+
+    public String obtieneListaAdy() {
+        String cad = "Listas de adyacencia:\n\n";
+        for (Map.Entry<String, TLista> entry : listaAdy.entrySet()) {
+            cad += entry.getKey() + " -> " + entry.getValue().cadenaLista() + "\n";
         }
-        
+
         return cad;
     }
 
-    private void bpf(int inicial){
-        visitados[inicial] = true;
-        recorrido += (inicial + 1) + " ";
-        
-        TNodo p = listaAdy[inicial].getCabecera().getSiguiente();
-        
-        while(p != null){
-            int ady = p.getDato() - 1;
-            
-            if(!visitados[ady]){
+    private void bpf(String actual) {
+        visitados.put(actual, true);
+        recorrido += actual + " ";
+        TNodo p = listaAdy.get(actual).getCabecera().getSiguiente();
+        while (p != null) {
+            String ady = p.getDato();
+            if (!visitados.get(ady)) {
                 bpf(ady);
             }
-            
             p = p.getSiguiente();
         }
     }
 
-    public String busquedaProfundidad(int inicial){
-        if(inicial < 1 || inicial > n){
-            return "Vertice inicial fuera de rango";
+    public String busquedaProfundidad(String inicial) {
+        inicial = normalizar(inicial);
+        if (!listaAdy.containsKey(inicial)) {
+            return "Vértice inicial inexistente";
         }
-        
-        for(int i = 0; i < n; i++){
-            visitados[i] = false;
+        for (String nodo : visitados.keySet()) {
+            visitados.put(nodo, false);
         }
-        
         recorrido = "";
-        bpf(inicial - 1);
-        
+        bpf(inicial);
         return recorrido;
+    }
+
+    public Set<String> obtenerNodos() {
+        return listaAdy.keySet();
+    }
+
+    public HashMap<String, TLista> getListaAdy() {
+        return listaAdy;
+    }
+
+    private String normalizar(String texto) {
+        if (texto == null) {
+            return "";
+        }
+        return texto.trim();
     }
 }
