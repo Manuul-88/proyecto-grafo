@@ -2,3 +2,14 @@
 /dist/
 /nbproject/private/
 /*.class
+
+# NetBeans
+nbproject/
+build/
+
+# Compilados
+*.class
+
+# Sistema
+.DS_Store
+Thumbs.db
