@@ -21,7 +21,6 @@ public class VentanaPrincipal extends JFrame {
         setLayout(null);
         setLocationRelativeTo(null);
 
-        // --- ENTRADAS ---
         JLabel lblOrigen = new JLabel("Origen:");
         lblOrigen.setBounds(370, 25, 60, 25);
         add(lblOrigen);
@@ -38,7 +37,7 @@ public class VentanaPrincipal extends JFrame {
         txtDestino.setBounds(425, 55, 100, 25);
         add(txtDestino);
 
-        // --- BOTONES ---
+        
         JButton btnAgregarArista = new JButton("Agregar Arista");
         btnAgregarArista.setBounds(540, 35, 130, 35);
         add(btnAgregarArista);
@@ -47,7 +46,7 @@ public class VentanaPrincipal extends JFrame {
         btnMostrar.setBounds(685, 35, 145, 35);
         add(btnMostrar);
 
-        // --- ÁREAS DE VISUALIZACIÓN ---
+        
         txtAreaAdyacencia = new JTextArea();
         txtAreaAdyacencia.setEditable(false);
         txtAreaAdyacencia.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -59,7 +58,7 @@ public class VentanaPrincipal extends JFrame {
         panelDibujo.setBounds(390, 130, 430, 350);
         add(panelDibujo);
 
-        // --- LÓGICA DE EVENTOS ---
+       
         btnAgregarArista.addActionListener(e -> {
             int o = letraANumero(txtOrigen.getText());
             int d = letraANumero(txtDestino.getText());

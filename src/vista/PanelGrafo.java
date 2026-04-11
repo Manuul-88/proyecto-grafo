@@ -22,10 +22,10 @@ public class PanelGrafo extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Coordenadas exactas para A, B, C, D
+        // Coordenadas paraA, B, C, D
         int[][] pos = {{220, 40}, {80, 130}, {340, 80}, {260, 200}};
 
-        // 1. DIBUJAR LÍNEAS (Corregido)
+       
         g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(2));
         for (int[] l : lineas) {
@@ -36,7 +36,7 @@ public class PanelGrafo extends JPanel {
             g2.drawLine(x1, y1, x2, y2);
         }
 
-        // 2. DIBUJAR CÍRCULOS Y LETRAS
+        
         for (int i = 0; i < pos.length; i++) {
             g2.setColor(new Color(195, 215, 235)); 
             g2.fillOval(pos[i][0], pos[i][1], 50, 50);
@@ -45,7 +45,7 @@ public class PanelGrafo extends JPanel {
             g2.setStroke(new BasicStroke(2));
             g2.drawOval(pos[i][0], pos[i][1], 50, 50);
             
-            // Estilo de la letra igual al original
+            
             g2.setFont(new Font("Arial", Font.BOLD, 24)); 
             g2.drawString(String.valueOf((char) ('A' + i)), pos[i][0] + 16, pos[i][1] + 34);
         }
