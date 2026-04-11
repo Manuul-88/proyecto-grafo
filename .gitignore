@@ -1,10 +1,31 @@
+# =========================
 # NetBeans
+# =========================
 nbproject/
 build/
+dist/
 
-# Compilados
+# Archivos de configuración de build
+build.xml
+manifest.mf
+
+# =========================
+# Java compilado
+# =========================
 *.class
 
-# Sistema
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Sistema operativo
+# =========================
 .DS_Store
 Thumbs.db
+
+# =========================
+# VSCode (opcional)
+# =========================
+.vscode/
