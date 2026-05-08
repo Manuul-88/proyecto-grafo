@@ -1,4 +1,4 @@
-//PanelGrafo
+//PanelGrafo 
 package vista;
 
 import modelo.TGrafo;

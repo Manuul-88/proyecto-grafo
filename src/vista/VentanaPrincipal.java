@@ -1,4 +1,4 @@
-//VentanaPrincipal
+//VentanaPrincipal 
 package vista;
 import modelo.TGrafo;
 import javax.swing.*;
@@ -34,7 +34,11 @@ public class VentanaPrincipal extends JFrame {
         JButton btnAgregarNodo = new JButton("Agregar Nodo");
         btnAgregarNodo.setBounds(200, 20, 140, 25);
         add(btnAgregarNodo);
-
+        
+        JButton btnBorrarArco = new JButton("Borrar Arco");
+        btnBorrarArco.setBounds(720, 60, 140, 25);
+        add(btnBorrarArco);
+        
         JLabel lblOrigen = new JLabel("Origen:");
         lblOrigen.setBounds(20, 60, 50, 25);
         add(lblOrigen);
@@ -87,6 +91,7 @@ public class VentanaPrincipal extends JFrame {
         btnAgregarArista.addActionListener(e -> agregarArista());
         btnMostrar.addActionListener(e -> mostrarAdyacencia());
         btnBPF.addActionListener(e -> hacerBPF());
+        btnBorrarArco.addActionListener(e -> borrarArco());
     }
 
     private void agregarNodo() {
@@ -127,4 +132,20 @@ public class VentanaPrincipal extends JFrame {
         String resultado = grafo.busquedaProfundidad(inicio);
         txtAreaSalida.setText("Recorrido en profundidad:\n" + resultado);
     }
+    
+    private void borrarArco() {
+    String origen = txtOrigen.getText().trim();
+    String destino = txtDestino.getText().trim();
+
+    if (grafo.borrarArco(origen, destino)) {
+        panelDibujo.repaint();
+        txtAreaSalida.setText("Arco eliminado correctamente entre " + origen + " y " + destino);
+        txtOrigen.setText("");
+        txtDestino.setText("");
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "No se pudo borrar el arco.\nVerifica que ambos nodos existan y que estén conectados.");
+    }
 }
+    
+}//fin

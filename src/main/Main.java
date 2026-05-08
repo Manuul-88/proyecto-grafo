@@ -1,4 +1,4 @@
-//main
+//main 
 package main;
 
 import vista.VentanaPrincipal;

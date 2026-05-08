@@ -1,4 +1,4 @@
-//TLista
+//TLista 
 package modelo;
 public class TLista {
     private TNodo cab, fin;
@@ -52,4 +52,27 @@ public class TLista {
         }
         return cad;
     }
+    
+    public boolean eliminar(String dato) {
+    TNodo anterior = cab;
+    TNodo actual = cab.getSiguiente();
+
+    while (actual != null) {
+        if (actual.getDato().equalsIgnoreCase(dato)) {
+            anterior.setSiguiente(actual.getSiguiente());
+
+            if (actual == fin) {
+                fin = anterior == cab ? null : anterior;
+            }
+
+            return true;
+        }
+
+        anterior = actual;
+        actual = actual.getSiguiente();
+    }
+
+    return false;
 }
+    
+}//fin

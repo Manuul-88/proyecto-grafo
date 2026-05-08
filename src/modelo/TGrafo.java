@@ -1,4 +1,4 @@
-//TGrafo
+//TGrafo 
 package modelo;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,4 +106,23 @@ public class TGrafo {
         }
         return texto.trim();
     }
+    
+    public boolean borrarArco(String origen, String destino) {
+    origen = normalizar(origen);
+    destino = normalizar(destino);
+
+    if (origen.isEmpty() || destino.isEmpty()) {
+        return false;
+    }
+
+    if (!listaAdy.containsKey(origen) || !listaAdy.containsKey(destino)) {
+        return false;
+    }
+
+    boolean eliminado1 = listaAdy.get(origen).eliminar(destino);
+    boolean eliminado2 = listaAdy.get(destino).eliminar(origen);
+
+    return eliminado1 || eliminado2;
 }
+    
+}//fin

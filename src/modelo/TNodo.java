@@ -1,4 +1,4 @@
-//TNodo
+//TNodo 
 package modelo;
 public class TNodo {
     private String dato;
