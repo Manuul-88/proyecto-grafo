@@ -188,4 +188,123 @@ public class TGrafo {
     return listaAdy.get(origen).buscar(destino);
 }
     
+    public boolean editarNodo(String nombreActual, String nombreNuevo) {
+    nombreActual = normalizar(nombreActual);
+    nombreNuevo = normalizar(nombreNuevo);
+
+    if (nombreActual.isEmpty() || nombreNuevo.isEmpty()) {
+        return false;
+    }
+
+    if (!listaAdy.containsKey(nombreActual)) {
+        return false;
+    }
+
+    if (listaAdy.containsKey(nombreNuevo)) {
+        return false;
+    }
+
+    TLista lista = listaAdy.remove(nombreActual);
+    listaAdy.put(nombreNuevo, lista);
+
+    Boolean visitado = visitados.remove(nombreActual);
+    visitados.put(nombreNuevo, visitado != null ? visitado : false);
+
+    for (TLista l : listaAdy.values()) {
+        l.editarDato(nombreActual, nombreNuevo);
+    }
+
+    return true;
+}
+
+public boolean editarPeso(String origen, String destino, int nuevoPeso) {
+    origen = normalizar(origen);
+    destino = normalizar(destino);
+
+    if (!listaAdy.containsKey(origen) || !listaAdy.containsKey(destino)) {
+        return false;
+    }
+
+    boolean editado1 = listaAdy.get(origen).editarPeso(destino, nuevoPeso);
+    boolean editado2 = listaAdy.get(destino).editarPeso(origen, nuevoPeso);
+
+    return editado1 || editado2;
+}
+
+public int contarAristas() {
+    int total = 0;
+
+    for (TLista lista : listaAdy.values()) {
+        total += lista.contar();
+    }
+
+    return total / 2;
+}
+
+public int contarNodos() {
+    return listaAdy.size();
+}
+
+public int pesoTotal() {
+    int total = 0;
+
+    for (String origen : listaAdy.keySet()) {
+        TNodo p = listaAdy.get(origen).getCabecera().getSiguiente();
+
+        while (p != null) {
+            String destino = p.getDato();
+
+            if (origen.compareTo(destino) < 0) {
+                total += p.getPeso();
+            }
+
+            p = p.getSiguiente();
+        }
+    }
+
+    return total;
+}
+
+public String obtenerRutaDFS(String origen, String destino) {
+    origen = normalizar(origen);
+    destino = normalizar(destino);
+
+    if (!listaAdy.containsKey(origen) || !listaAdy.containsKey(destino)) {
+        return "";
+    }
+
+    for (String nodo : visitados.keySet()) {
+        visitados.put(nodo, false);
+    }
+
+    return buscarRutaDFS(origen, destino, "");
+}
+
+private String buscarRutaDFS(String actual, String destino, String ruta) {
+    visitados.put(actual, true);
+    ruta += actual + " ";
+
+    if (actual.equalsIgnoreCase(destino)) {
+        return ruta;
+    }
+
+    TNodo p = listaAdy.get(actual).getCabecera().getSiguiente();
+
+    while (p != null) {
+        String vecino = p.getDato();
+
+        if (!visitados.get(vecino)) {
+            String resultado = buscarRutaDFS(vecino, destino, ruta);
+
+            if (!resultado.isEmpty()) {
+                return resultado;
+            }
+        }
+
+        p = p.getSiguiente();
+    }
+
+    return "";
+}
+    
 }//fin

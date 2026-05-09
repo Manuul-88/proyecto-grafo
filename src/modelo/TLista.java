@@ -118,5 +118,34 @@ public class TLista {
 
         return contador;
     } 
-   
+    
+    public boolean editarDato(String actual, String nuevo) {
+    TNodo p = cab.getSiguiente();
+
+    while (p != null) {
+        if (p.getDato().equalsIgnoreCase(actual)) {
+            p.setDato(nuevo);
+            return true;
+        }
+        p = p.getSiguiente();
+    }
+
+    return false;
+}
+
+public boolean editarPeso(String destino, int nuevoPeso) {
+    TNodo p = cab.getSiguiente();
+
+    while (p != null) {
+        if (p.getDato().equalsIgnoreCase(destino)) {
+            p.setPeso(nuevoPeso);
+            return true;
+        }
+        p = p.getSiguiente();
+    }
+
+    return false;
+}
+    
+    
 }//fin
