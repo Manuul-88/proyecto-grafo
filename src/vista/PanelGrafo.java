@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.QuadCurve2D;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,11 +29,20 @@ public class PanelGrafo extends JPanel {
     private final int RADIO = 58;
     private Timer timer;
 
+    private double zoom = 1.0;
+    private boolean mostrarMinimapa = true;
+    private boolean usarBezier = false;
+    
+    private boolean parpadeoRuta = true;
+    private int contadorParpadeo = 0;
+
+    private java.util.ArrayList<String> rutaResaltada = new java.util.ArrayList<>();
+
     public PanelGrafo(TGrafo grafo) {
         this.grafo = grafo;
         this.posiciones = new HashMap<>();
         this.velocidades = new HashMap<>();
-        this.tema = TemaApp.obtenerTema("Espacio");
+        this.tema = TemaApp.obtenerTema("Halo");
 
         setBackground(tema.fondoCanvas);
         setBorder(BorderFactory.createLineBorder(new Color(50, 60, 90), 2));
@@ -40,11 +50,14 @@ public class PanelGrafo extends JPanel {
         configurarMouse();
 
         timer = new Timer(16, e -> {
-            if (fisicaActiva) {
-                actualizarFisica();
-            }
-            repaint();
-        });
+    if (fisicaActiva) {
+        actualizarFisica();
+    }
+
+    contadorParpadeo++;
+
+    repaint();
+});
 
         timer.start();
     }
@@ -71,8 +84,8 @@ public class PanelGrafo extends JPanel {
 
         int cantidad = posiciones.size();
 
-        double centroX = Math.max(getWidth() / 2.0, 250);
-        double centroY = Math.max(getHeight() / 2.0, 250);
+        double centroX = Math.max((getWidth() / zoom) / 2.0, 250);
+        double centroY = Math.max((getHeight() / zoom) / 2.0, 250);
 
         double angulo = cantidad * 0.8;
         double distancia = 120 + cantidad * 8;
@@ -86,13 +99,37 @@ public class PanelGrafo extends JPanel {
         repaint();
     }
 
+    public void eliminarNodoVisual(String nombre) {
+        posiciones.remove(nombre);
+        velocidades.remove(nombre);
+        repaint();
+    }
+
+    public void renombrarNodoVisual(String actual, String nuevo) {
+        Point2D.Double pos = posiciones.remove(actual);
+        Point2D.Double vel = velocidades.remove(actual);
+
+        if (pos != null) {
+            posiciones.put(nuevo, pos);
+        }
+
+        if (vel != null) {
+            velocidades.put(nuevo, vel);
+        }
+
+        repaint();
+    }
+
     private void configurarMouse() {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (!modoMover) return;
 
-                nodoSeleccionado = obtenerNodoEn(e.getX(), e.getY());
+                int mx = (int) (e.getX() / zoom);
+                int my = (int) (e.getY() / zoom);
+
+                nodoSeleccionado = obtenerNodoEn(mx, my);
 
                 if (nodoSeleccionado != null) {
                     velocidades.get(nodoSeleccionado).x = 0;
@@ -112,8 +149,9 @@ public class PanelGrafo extends JPanel {
                 if (!modoMover || nodoSeleccionado == null) return;
 
                 Point2D.Double p = posiciones.get(nodoSeleccionado);
-                p.x = e.getX();
-                p.y = e.getY();
+
+                p.x = e.getX() / zoom;
+                p.y = e.getY() / zoom;
 
                 mantenerDentroDelCanvas(p);
                 repaint();
@@ -233,11 +271,14 @@ public class PanelGrafo extends JPanel {
     private void mantenerDentroDelCanvas(Point2D.Double p) {
         int margen = RADIO;
 
+        double maxX = getWidth() / zoom;
+        double maxY = getHeight() / zoom;
+
         if (p.x < margen) p.x = margen;
         if (p.y < margen) p.y = margen;
 
-        if (p.x > getWidth() - margen) p.x = getWidth() - margen;
-        if (p.y > getHeight() - margen) p.y = getHeight() - margen;
+        if (p.x > maxX - margen) p.x = maxX - margen;
+        if (p.y > maxY - margen) p.y = maxY - margen;
     }
 
     @Override
@@ -249,99 +290,127 @@ public class PanelGrafo extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         dibujarFondo(g2);
-        dibujarAristas(g2);
-        dibujarNodos(g2);
+
+        Graphics2D gZoom = (Graphics2D) g2.create();
+        gZoom.scale(zoom, zoom);
+
+        dibujarAristas(gZoom);
+        dibujarNodos(gZoom);
+
+        gZoom.dispose();
+
         dibujarIndicadorModo(g2);
-    }
 
-    private void dibujarFondo(Graphics2D g2) {
-        g2.setColor(tema.fondoCanvas);
-        g2.fillRect(0, 0, getWidth(), getHeight());
-
-        if (tema.nombre.equals("Espacio")) {
-            g2.setColor(new Color(70, 90, 140, 90));
-            for (int i = 0; i < 90; i++) {
-                int x = (i * 97) % Math.max(getWidth(), 1);
-                int y = (i * 53) % Math.max(getHeight(), 1);
-                g2.fillOval(x, y, 2, 2);
-            }
-        }
-
-        if (tema.nombre.equals("Sakura")) {
-            g2.setColor(new Color(255, 170, 200, 100));
-            for (int i = 0; i < 50; i++) {
-                int x = (i * 83) % Math.max(getWidth(), 1);
-                int y = (i * 47) % Math.max(getHeight(), 1);
-                g2.fillOval(x, y, 7, 4);
-            }
-        }
-
-        if (tema.nombre.equals("Cyberpunk")) {
-            g2.setColor(new Color(255, 0, 180, 60));
-            for (int y = 0; y < getHeight(); y += 45) {
-                g2.drawLine(0, y, getWidth(), y);
-            }
-
-            g2.setColor(new Color(0, 255, 255, 45));
-            for (int x = 0; x < getWidth(); x += 45) {
-                g2.drawLine(x, 0, x, getHeight());
-            }
-        }
-
-        if (tema.nombre.equals("Halo")) {
-            g2.setColor(new Color(120, 220, 190, 40));
-            for (int i = 0; i < 8; i++) {
-                int size = 180 + i * 80;
-                g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size);
-            }
+        if (mostrarMinimapa) {
+            dibujarMinimapa(g2);
         }
     }
-
     
-    private void dibujarPesoCentro(Graphics2D g2, double x, double y, int peso) {
+    private void dibujarFondo(Graphics2D g2) {
+    g2.setColor(tema.fondoCanvas);
+    g2.fillRect(0, 0, getWidth(), getHeight());
 
-    String texto = String.valueOf(peso);
+    if (tema.nombre.equals("Halo")) {
+        g2.setColor(new Color(120, 220, 190, 40));
+        for (int i = 0; i < 9; i++) {
+            int size = 180 + i * 85;
+            g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size);
+        }
 
-    g2.setFont(new Font("Arial", Font.BOLD, 16));
-
-    FontMetrics fm = g2.getFontMetrics();
-
-    int ancho = fm.stringWidth(texto);
-    int alto = fm.getAscent();
-
-    // sombra
-    g2.setColor(new Color(0,0,0,180));
-
-    g2.drawString(
-            texto,
-            (int)(x - ancho / 2 + 2),
-            (int)(y + alto / 2 + 2)
-    );
-
-    // color
-    if (peso == 0) {
-        g2.setColor(Color.WHITE);
-    }
-    else if (peso <= 3) {
-        g2.setColor(new Color(0, 255, 100));
-    }
-    else if (peso <= 7) {
-        g2.setColor(new Color(255, 230, 0));
-    }
-    else {
-        g2.setColor(new Color(255, 60, 60));
+        g2.setColor(new Color(90, 255, 180, 35));
+        for (int i = 0; i < 35; i++) {
+            int x = (i * 113) % Math.max(getWidth(), 1);
+            int y = (i * 67) % Math.max(getHeight(), 1);
+            g2.fillOval(x, y, 2, 2);
+        }
     }
 
-    // texto
-    g2.drawString(
-            texto,
-            (int)(x - ancho / 2),
-            (int)(y + alto / 2)
-    );
+    if (tema.nombre.equals("DD")) {
+        int centroY = getHeight() / 2;
+
+        g2.setColor(new Color(255, 30, 30, 45));
+
+        for (int y = 80; y < getHeight(); y += 90) {
+            for (int x = 0; x < getWidth(); x += 8) {
+                int onda = (int) (Math.sin((x + y) * 0.035) * 18);
+                g2.fillOval(x, y + onda, 3, 3);
+            }
+        }
+
+        g2.setColor(new Color(255, 0, 0, 80));
+        for (int i = 0; i < 4; i++) {
+            g2.drawOval(getWidth() / 2 - 140 - i * 55, centroY - 140 - i * 55,
+                    280 + i * 110, 280 + i * 110);
+        }
+    }
+
+    if (tema.nombre.equals("Interestelar")) {
+        g2.setColor(new Color(180, 220, 255, 120));
+        for (int i = 0; i < 120; i++) {
+            int x = (i * 97) % Math.max(getWidth(), 1);
+            int y = (i * 53) % Math.max(getHeight(), 1);
+            int s = i % 5 == 0 ? 3 : 2;
+            g2.fillOval(x, y, s, s);
+        }
+
+        g2.setColor(new Color(70, 120, 255, 40));
+        for (int i = 0; i < 7; i++) {
+            int size = 220 + i * 95;
+            g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size / 2);
+        }
+    }
+
+    if (tema.nombre.equals("Ego")) {
+        g2.setColor(new Color(0, 120, 255, 45));
+        for (int x = -getHeight(); x < getWidth(); x += 70) {
+            g2.drawLine(x, 0, x + getHeight(), getHeight());
+        }
+
+        g2.setColor(new Color(0, 255, 220, 40));
+        for (int i = 0; i < 8; i++) {
+            int size = 130 + i * 75;
+            g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size);
+        }
+    }
+
+    if (tema.nombre.equals("Neon")) {
+        g2.setColor(new Color(0, 255, 220, 50));
+        for (int y = 0; y < getHeight(); y += 38) {
+            g2.drawLine(0, y, getWidth(), y);
+        }
+
+        g2.setColor(new Color(180, 0, 255, 45));
+        for (int x = 0; x < getWidth(); x += 38) {
+            g2.drawLine(x, 0, x, getHeight());
+        }
+
+        g2.setColor(new Color(255, 255, 255, 80));
+        for (int i = 0; i < 50; i++) {
+            int x = (i * 89) % Math.max(getWidth(), 1);
+            int y = (i * 47) % Math.max(getHeight(), 1);
+            g2.fillOval(x, y, 2, 2);
+        }
+    }
+
+    if (tema.nombre.equals("Cyberpunk")) {
+        g2.setColor(new Color(255, 0, 180, 65));
+        for (int y = 0; y < getHeight(); y += 45) {
+            g2.drawLine(0, y, getWidth(), y);
+        }
+
+        g2.setColor(new Color(0, 255, 255, 55));
+        for (int x = 0; x < getWidth(); x += 45) {
+            g2.drawLine(x, 0, x, getHeight());
+        }
+
+        g2.setColor(new Color(255, 240, 80, 50));
+        for (int x = -getHeight(); x < getWidth(); x += 120) {
+            g2.drawLine(x, getHeight(), x + getHeight(), 0);
+        }
+    }
 }
-
+    
     private void dibujarAristas(Graphics2D g2) {
-
     for (Map.Entry<String, TLista> entry : grafo.getListaAdy().entrySet()) {
 
         String origen = entry.getKey();
@@ -352,7 +421,6 @@ public class PanelGrafo extends JPanel {
         TNodo aux = entry.getValue().getCabecera().getSiguiente();
 
         while (aux != null) {
-
             String destino = aux.getDato();
             int peso = aux.getPeso();
 
@@ -360,34 +428,42 @@ public class PanelGrafo extends JPanel {
 
             if (p2 != null && origen.compareTo(destino) < 0) {
 
-                // COLOR
-                if (peso == 0) {
-                    g2.setColor(Color.WHITE);
-                }
-                else if (peso <= 3) {
-                    g2.setColor(new Color(0, 255, 100));
-                }
-                else if (peso <= 7) {
-                    g2.setColor(new Color(255, 230, 0));
-                }
-                else {
-                    g2.setColor(new Color(255, 60, 60));
+                boolean resaltada = aristaEnRuta(origen, destino);
+
+                if (resaltada) {
+                    boolean visible = !parpadeoRuta || (contadorParpadeo / 25) % 2 == 0;
+
+                    if (visible) {
+                        g2.setColor(Color.CYAN);
+                        g2.setStroke(new BasicStroke(7, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                    } else {
+                        g2.setColor(new Color(255, 255, 255, 80));
+                        g2.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                    }
+
+                } else {
+                    if (peso == 0) {
+                        g2.setColor(Color.WHITE);
+                    } else if (peso <= 3) {
+                        g2.setColor(new Color(0, 255, 100));
+                    } else if (peso <= 7) {
+                        g2.setColor(new Color(255, 230, 0));
+                    } else {
+                        g2.setColor(new Color(255, 60, 60));
+                    }
+
+                    float grosor = 2.0f + Math.min(peso, 10) * 0.35f;
+
+                    g2.setStroke(new BasicStroke(
+                            grosor,
+                            BasicStroke.CAP_ROUND,
+                            BasicStroke.JOIN_ROUND
+                    ));
                 }
 
-                // GROSOR
-                float grosor = 2.0f + Math.min(peso, 10) * 0.35f;
-
-                g2.setStroke(new BasicStroke(
-                        grosor,
-                        BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND
-                ));
-
-                // CENTRO
                 double mx = (p1.x + p2.x) / 2.0;
                 double my = (p1.y + p2.y) / 2.0;
 
-                // DIRECCIÓN
                 double dx = p2.x - p1.x;
                 double dy = p2.y - p1.y;
 
@@ -395,37 +471,39 @@ public class PanelGrafo extends JPanel {
 
                 if (len == 0) continue;
 
-                // NORMALIZAR
                 double ux = dx / len;
                 double uy = dy / len;
 
-                // TAMAÑO DEL HUECO
                 double gap = 22;
 
-                // PUNTOS DEL HUECO
                 double gx1 = mx - ux * gap;
                 double gy1 = my - uy * gap;
 
                 double gx2 = mx + ux * gap;
                 double gy2 = my + uy * gap;
 
-                // LINEA 1
-                g2.drawLine(
-                        (int) p1.x,
-                        (int) p1.y,
-                        (int) gx1,
-                        (int) gy1
-                );
+                if (usarBezier) {
+                    double nx = -uy;
+                    double ny = ux;
 
-                // LINEA 2
-                g2.drawLine(
-                        (int) gx2,
-                        (int) gy2,
-                        (int) p2.x,
-                        (int) p2.y
-                );
+                    double curva = 55;
 
-                // DIBUJAR PESO
+                    double cx = mx + nx * curva;
+                    double cy = my + ny * curva;
+
+                    QuadCurve2D curvaBezier = new QuadCurve2D.Double(
+                            p1.x, p1.y,
+                            cx, cy,
+                            p2.x, p2.y
+                    );
+
+                    g2.draw(curvaBezier);
+
+                } else {
+                    g2.drawLine((int) p1.x, (int) p1.y, (int) gx1, (int) gy1);
+                    g2.drawLine((int) gx2, (int) gy2, (int) p2.x, (int) p2.y);
+                }
+
                 dibujarPesoCentro(g2, mx, my, peso);
             }
 
@@ -433,34 +511,40 @@ public class PanelGrafo extends JPanel {
         }
     }
 }
-    
-    private void dibujarPesoArista(Graphics2D g2, Point2D.Double p1, Point2D.Double p2, int peso) {
-    if (peso <= 0) {
-        return;
-    }
 
-    int xMedio = (int) ((p1.x + p2.x) / 2);
-    int yMedio = (int) ((p1.y + p2.y) / 2);
+    private void dibujarPesoCentro(Graphics2D g2, double x, double y, int peso) {
+        String texto = String.valueOf(peso);
 
-    String texto = String.valueOf(peso);
+        g2.setFont(new Font("Arial", Font.BOLD, 16));
 
-    g2.setFont(new Font("Arial", Font.BOLD, 16));
-    FontMetrics fm = g2.getFontMetrics();
+        FontMetrics fm = g2.getFontMetrics();
 
-    int ancho = fm.stringWidth(texto);
+        int ancho = fm.stringWidth(texto);
+        int alto = fm.getAscent();
 
-    g2.setColor(Color.BLACK);
-    g2.drawString(texto, xMedio - ancho / 2 + 2, yMedio + 7 + 2);
+        g2.setColor(new Color(0, 0, 0, 180));
 
-    if (peso <= 3) {
-        g2.setColor(new Color(0, 255, 100));
-    } else if (peso <= 7) {
-        g2.setColor(new Color(255, 230, 0));
-    } else {
-        g2.setColor(new Color(255, 40, 40));
-    }
+        g2.drawString(
+                texto,
+                (int) (x - ancho / 2 + 2),
+                (int) (y + alto / 2 + 2)
+        );
 
-    g2.drawString(texto, xMedio - ancho / 2, yMedio + 7);
+        if (peso == 0) {
+            g2.setColor(Color.WHITE);
+        } else if (peso <= 3) {
+            g2.setColor(new Color(0, 255, 100));
+        } else if (peso <= 7) {
+            g2.setColor(new Color(255, 230, 0));
+        } else {
+            g2.setColor(new Color(255, 60, 60));
+        }
+
+        g2.drawString(
+                texto,
+                (int) (x - ancho / 2),
+                (int) (y + alto / 2)
+        );
     }
 
     private void dibujarNodos(Graphics2D g2) {
@@ -536,11 +620,107 @@ public class PanelGrafo extends JPanel {
         g2.setColor(tema.textoSecundario);
         g2.drawString(texto, 18, 25);
     }
-    
-    public void eliminarNodoVisual(String nombre) {
-    posiciones.remove(nombre);
-    velocidades.remove(nombre);
-    repaint();
-}
-    
+
+    private void dibujarMinimapa(Graphics2D g2) {
+        int w = 170;
+        int h = 110;
+        int x = getWidth() - w - 20;
+        int y = 20;
+
+        g2.setColor(new Color(0, 0, 0, 140));
+        g2.fillRoundRect(x, y, w, h, 12, 12);
+
+        g2.setColor(new Color(120, 180, 255));
+        g2.drawRoundRect(x, y, w, h, 12, 12);
+
+        if (posiciones.isEmpty()) return;
+
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = -Double.MAX_VALUE;
+        double maxY = -Double.MAX_VALUE;
+
+        for (Point2D.Double p : posiciones.values()) {
+            if (p.x < minX) minX = p.x;
+            if (p.y < minY) minY = p.y;
+            if (p.x > maxX) maxX = p.x;
+            if (p.y > maxY) maxY = p.y;
+        }
+
+        double rangoX = Math.max(maxX - minX, 1);
+        double rangoY = Math.max(maxY - minY, 1);
+
+        for (Map.Entry<String, Point2D.Double> entry : posiciones.entrySet()) {
+            Point2D.Double p = entry.getValue();
+
+            int px = x + 15 + (int) ((p.x - minX) / rangoX * (w - 30));
+            int py = y + 15 + (int) ((p.y - minY) / rangoY * (h - 30));
+
+            g2.setColor(Color.CYAN);
+            g2.fillOval(px - 3, py - 3, 6, 6);
+        }
+    }
+
+    public void acercarZoom() {
+        zoom += 0.1;
+        if (zoom > 2.5) zoom = 2.5;
+        repaint();
+    }
+
+    public void alejarZoom() {
+        zoom -= 0.1;
+        if (zoom < 0.4) zoom = 0.4;
+        repaint();
+    }
+
+    public void resetZoom() {
+        zoom = 1.0;
+        repaint();
+    }
+
+    public void setMostrarMinimapa(boolean mostrarMinimapa) {
+        this.mostrarMinimapa = mostrarMinimapa;
+        repaint();
+    }
+
+    public void setUsarBezier(boolean usarBezier) {
+        this.usarBezier = usarBezier;
+        repaint();
+    }
+
+    public void resaltarRuta(String rutaTexto) {
+        rutaResaltada.clear();
+
+        if (rutaTexto == null || rutaTexto.trim().isEmpty()) {
+            repaint();
+            return;
+        }
+
+        String[] partes = rutaTexto.trim().split("\\s+");
+
+        for (String p : partes) {
+            rutaResaltada.add(p);
+        }
+
+        repaint();
+    }
+
+    public void limpiarRutaResaltada() {
+        rutaResaltada.clear();
+        repaint();
+    }
+
+    private boolean aristaEnRuta(String origen, String destino) {
+        for (int i = 0; i < rutaResaltada.size() - 1; i++) {
+            String a = rutaResaltada.get(i);
+            String b = rutaResaltada.get(i + 1);
+
+            if ((a.equalsIgnoreCase(origen) && b.equalsIgnoreCase(destino)) ||
+                    (a.equalsIgnoreCase(destino) && b.equalsIgnoreCase(origen))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

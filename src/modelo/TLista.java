@@ -88,4 +88,64 @@ public class TLista {
     return false;
 }
     
+   public int obtenerPeso(String destino) {
+
+    TNodo p = cab.getSiguiente();
+
+    while (p != null) {
+
+        if (p.getDato().equalsIgnoreCase(destino)) {
+            return p.getPeso();
+        }
+
+        p = p.getSiguiente();
+    }
+
+    return -1;
+    }
+
+    public int contar() {
+
+        int contador = 0;
+
+        TNodo p = cab.getSiguiente();
+
+        while (p != null) {
+
+            contador++;
+            p = p.getSiguiente();
+        }
+
+        return contador;
+    } 
+    
+    public boolean editarDato(String actual, String nuevo) {
+    TNodo p = cab.getSiguiente();
+
+    while (p != null) {
+        if (p.getDato().equalsIgnoreCase(actual)) {
+            p.setDato(nuevo);
+            return true;
+        }
+        p = p.getSiguiente();
+    }
+
+    return false;
+}
+
+public boolean editarPeso(String destino, int nuevoPeso) {
+    TNodo p = cab.getSiguiente();
+
+    while (p != null) {
+        if (p.getDato().equalsIgnoreCase(destino)) {
+            p.setPeso(nuevoPeso);
+            return true;
+        }
+        p = p.getSiguiente();
+    }
+
+    return false;
+}
+    
+    
 }//fin

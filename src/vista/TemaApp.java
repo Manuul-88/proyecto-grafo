@@ -54,77 +54,6 @@ public class TemaApp {
     }
 
     public static TemaApp obtenerTema(String nombre) {
-        if (nombre.equals("Neon")) {
-            return new TemaApp(
-                    "Neon",
-                    new Color(8, 8, 14),
-                    new Color(15, 18, 28),
-                    new Color(5, 5, 12),
-                    new Color(230, 255, 255),
-                    new Color(0, 255, 220),
-                    new Color(20, 90, 100),
-                    new Color(0, 180, 170),
-                    new Color(12, 16, 25),
-                    new Color(230, 255, 255),
-                    new Color(0, 255, 220),
-                    new Color(120, 80, 255),
-                    new Color(0, 255, 220)
-            );
-        }
-
-        if (nombre.equals("Clasico")) {
-            return new TemaApp(
-                    "Clasico",
-                    new Color(235, 238, 242),
-                    new Color(245, 247, 250),
-                    Color.WHITE,
-                    Color.BLACK,
-                    Color.DARK_GRAY,
-                    new Color(210, 225, 240),
-                    new Color(185, 210, 235),
-                    Color.WHITE,
-                    Color.BLACK,
-                    new Color(195, 215, 235),
-                    new Color(220, 235, 250),
-                    Color.BLACK
-            );
-        }
-
-        if (nombre.equals("Sakura")) {
-            return new TemaApp(
-                    "Sakura",
-                    new Color(255, 238, 245),
-                    new Color(255, 225, 238),
-                    new Color(255, 245, 250),
-                    new Color(80, 30, 55),
-                    new Color(160, 70, 110),
-                    new Color(255, 170, 205),
-                    new Color(255, 120, 170),
-                    Color.WHITE,
-                    new Color(80, 30, 55),
-                    new Color(255, 185, 215),
-                    new Color(255, 120, 175),
-                    new Color(210, 90, 140)
-            );
-        }
-
-        if (nombre.equals("Cyberpunk")) {
-            return new TemaApp(
-                    "Cyberpunk",
-                    new Color(18, 0, 30),
-                    new Color(35, 0, 55),
-                    new Color(10, 0, 22),
-                    new Color(255, 240, 80),
-                    new Color(0, 255, 255),
-                    new Color(180, 0, 140),
-                    new Color(0, 200, 255),
-                    new Color(25, 0, 40),
-                    new Color(255, 240, 80),
-                    new Color(255, 0, 180),
-                    new Color(0, 255, 255),
-                    new Color(255, 240, 80)
-            );
-        }
 
         if (nombre.equals("Halo")) {
             return new TemaApp(
@@ -144,20 +73,96 @@ public class TemaApp {
             );
         }
 
-        return new TemaApp(
-                "Espacio",
-                new Color(10, 14, 28),
-                new Color(16, 22, 36),
-                new Color(10, 14, 28),
-                Color.WHITE,
-                new Color(190, 205, 235),
-                new Color(60, 80, 120),
-                new Color(90, 120, 180),
-                new Color(20, 28, 45),
-                Color.WHITE,
-                new Color(75, 130, 255),
-                new Color(170, 90, 255),
-                new Color(120, 180, 255)
-        );
+        if (nombre.equals("DD")) {
+            return new TemaApp(
+                    "DD",
+                    new Color(22, 0, 0),
+                    new Color(42, 5, 5),
+                    new Color(10, 0, 0),
+                    new Color(255, 230, 230),
+                    new Color(255, 70, 70),
+                    new Color(100, 15, 15),
+                    new Color(190, 20, 20),
+                    new Color(25, 0, 0),
+                    new Color(255, 230, 230),
+                    new Color(180, 20, 20),
+                    new Color(255, 60, 60),
+                    new Color(255, 40, 40)
+            );
+        }
+
+        if (nombre.equals("Interestelar")) {
+            return new TemaApp(
+                    "Interestelar",
+                    new Color(3, 6, 18),
+                    new Color(9, 14, 32),
+                    new Color(2, 4, 14),
+                    new Color(235, 245, 255),
+                    new Color(130, 190, 255),
+                    new Color(25, 55, 100),
+                    new Color(55, 115, 190),
+                    new Color(8, 14, 30),
+                    new Color(235, 245, 255),
+                    new Color(70, 130, 255),
+                    new Color(180, 100, 255),
+                    new Color(120, 190, 255)
+            );
+        }
+
+        if (nombre.equals("Ego")) {
+            return new TemaApp(
+                    "Ego",
+                    new Color(4, 8, 24),
+                    new Color(8, 18, 45),
+                    new Color(2, 7, 22),
+                    new Color(235, 245, 255),
+                    new Color(60, 170, 255),
+                    new Color(10, 65, 130),
+                    new Color(0, 130, 255),
+                    new Color(5, 16, 38),
+                    new Color(235, 245, 255),
+                    new Color(0, 115, 255),
+                    new Color(0, 255, 220),
+                    new Color(0, 180, 255)
+            );
+        }
+
+        if (nombre.equals("Neon")) {
+            return new TemaApp(
+                    "Neon",
+                    new Color(3, 3, 10),
+                    new Color(10, 12, 24),
+                    new Color(0, 0, 8),
+                    new Color(240, 255, 255),
+                    new Color(0, 255, 220),
+                    new Color(20, 30, 80),
+                    new Color(0, 255, 220),
+                    new Color(5, 8, 20),
+                    new Color(240, 255, 255),
+                    new Color(0, 255, 220),
+                    new Color(180, 0, 255),
+                    new Color(0, 255, 220)
+            );
+        }
+
+        if (nombre.equals("Cyberpunk")) {
+            return new TemaApp(
+                    "Cyberpunk",
+                    new Color(14, 0, 28),
+                    new Color(32, 0, 50),
+                    new Color(8, 0, 20),
+                    new Color(255, 245, 90),
+                    new Color(0, 255, 255),
+                    new Color(120, 0, 120),
+                    new Color(255, 0, 180),
+                    new Color(22, 0, 38),
+                    new Color(255, 245, 90),
+                    new Color(255, 0, 180),
+                    new Color(0, 255, 255),
+                    new Color(255, 245, 90)
+            );
+        }
+
+        return obtenerTema("Halo");
     }
 }
