@@ -297,40 +297,167 @@ public class PanelGrafo extends JPanel {
         }
     }
 
+    
+    private void dibujarPesoCentro(Graphics2D g2, double x, double y, int peso) {
+
+    String texto = String.valueOf(peso);
+
+    g2.setFont(new Font("Arial", Font.BOLD, 16));
+
+    FontMetrics fm = g2.getFontMetrics();
+
+    int ancho = fm.stringWidth(texto);
+    int alto = fm.getAscent();
+
+    // sombra
+    g2.setColor(new Color(0,0,0,180));
+
+    g2.drawString(
+            texto,
+            (int)(x - ancho / 2 + 2),
+            (int)(y + alto / 2 + 2)
+    );
+
+    // color
+    if (peso == 0) {
+        g2.setColor(Color.WHITE);
+    }
+    else if (peso <= 3) {
+        g2.setColor(new Color(0, 255, 100));
+    }
+    else if (peso <= 7) {
+        g2.setColor(new Color(255, 230, 0));
+    }
+    else {
+        g2.setColor(new Color(255, 60, 60));
+    }
+
+    // texto
+    g2.drawString(
+            texto,
+            (int)(x - ancho / 2),
+            (int)(y + alto / 2)
+    );
+}
+
     private void dibujarAristas(Graphics2D g2) {
-        g2.setColor(new Color(
-                tema.arista.getRed(),
-                tema.arista.getGreen(),
-                tema.arista.getBlue(),
-                180
-        ));
 
-        g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+    for (Map.Entry<String, TLista> entry : grafo.getListaAdy().entrySet()) {
 
-        for (Map.Entry<String, TLista> entry : grafo.getListaAdy().entrySet()) {
-            String origen = entry.getKey();
-            Point2D.Double p1 = posiciones.get(origen);
+        String origen = entry.getKey();
+        Point2D.Double p1 = posiciones.get(origen);
 
-            if (p1 == null) continue;
+        if (p1 == null) continue;
 
-            TNodo aux = entry.getValue().getCabecera().getSiguiente();
+        TNodo aux = entry.getValue().getCabecera().getSiguiente();
 
-            while (aux != null) {
-                String destino = aux.getDato();
-                Point2D.Double p2 = posiciones.get(destino);
+        while (aux != null) {
 
-                if (p2 != null && origen.compareTo(destino) < 0) {
-                    g2.drawLine(
-                            (int) p1.x,
-                            (int) p1.y,
-                            (int) p2.x,
-                            (int) p2.y
-                    );
+            String destino = aux.getDato();
+            int peso = aux.getPeso();
+
+            Point2D.Double p2 = posiciones.get(destino);
+
+            if (p2 != null && origen.compareTo(destino) < 0) {
+
+                // COLOR
+                if (peso <= 3) {
+                    g2.setColor(new Color(0, 255, 100));
+                }
+                else if (peso <= 7) {
+                    g2.setColor(new Color(255, 230, 0));
+                }
+                else {
+                    g2.setColor(new Color(255, 60, 60));
                 }
 
-                aux = aux.getSiguiente();
+                // GROSOR
+                float grosor = 2.0f + Math.min(peso, 10) * 0.35f;
+
+                g2.setStroke(new BasicStroke(
+                        grosor,
+                        BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND
+                ));
+
+                // CENTRO
+                double mx = (p1.x + p2.x) / 2.0;
+                double my = (p1.y + p2.y) / 2.0;
+
+                // DIRECCIÓN
+                double dx = p2.x - p1.x;
+                double dy = p2.y - p1.y;
+
+                double len = Math.sqrt(dx * dx + dy * dy);
+
+                if (len == 0) continue;
+
+                // NORMALIZAR
+                double ux = dx / len;
+                double uy = dy / len;
+
+                // TAMAÑO DEL HUECO
+                double gap = 22;
+
+                // PUNTOS DEL HUECO
+                double gx1 = mx - ux * gap;
+                double gy1 = my - uy * gap;
+
+                double gx2 = mx + ux * gap;
+                double gy2 = my + uy * gap;
+
+                // LINEA 1
+                g2.drawLine(
+                        (int) p1.x,
+                        (int) p1.y,
+                        (int) gx1,
+                        (int) gy1
+                );
+
+                // LINEA 2
+                g2.drawLine(
+                        (int) gx2,
+                        (int) gy2,
+                        (int) p2.x,
+                        (int) p2.y
+                );
+
+                // DIBUJAR PESO
+                dibujarPesoCentro(g2, mx, my, peso);
             }
+
+            aux = aux.getSiguiente();
         }
+    }
+}
+    
+    private void dibujarPesoArista(Graphics2D g2, Point2D.Double p1, Point2D.Double p2, int peso) {
+    if (peso <= 0) {
+        return;
+    }
+
+    int xMedio = (int) ((p1.x + p2.x) / 2);
+    int yMedio = (int) ((p1.y + p2.y) / 2);
+
+    String texto = String.valueOf(peso);
+
+    g2.setFont(new Font("Arial", Font.BOLD, 16));
+    FontMetrics fm = g2.getFontMetrics();
+
+    int ancho = fm.stringWidth(texto);
+
+    g2.setColor(Color.BLACK);
+    g2.drawString(texto, xMedio - ancho / 2 + 2, yMedio + 7 + 2);
+
+    if (peso <= 3) {
+        g2.setColor(new Color(0, 255, 100));
+    } else if (peso <= 7) {
+        g2.setColor(new Color(255, 230, 0));
+    } else {
+        g2.setColor(new Color(255, 40, 40));
+    }
+
+    g2.drawString(texto, xMedio - ancho / 2, yMedio + 7);
     }
 
     private void dibujarNodos(Graphics2D g2) {

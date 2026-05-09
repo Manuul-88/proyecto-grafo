@@ -22,6 +22,7 @@ public class TLista {
     }
     public void insertarFinal(String dato) {
         TNodo p = new TNodo(dato);
+        
         if (fin == null) {
             cab.setSiguiente(p);
         } else {
@@ -30,6 +31,18 @@ public class TLista {
 
         fin = p;
     }
+    public void insertarFinal(String dato, int peso) {
+        TNodo p = new TNodo(dato, peso);
+
+        if (fin == null) {
+            cab.setSiguiente(p);
+        } else {
+            fin.setSiguiente(p);
+        }
+
+        fin = p;
+        }
+    
     public boolean buscar(String dato) {
         TNodo p = cab.getSiguiente();
         while (p != null) {
@@ -44,7 +57,7 @@ public class TLista {
         String cad = "";
         TNodo p = cab.getSiguiente();
         while (p != null) {
-            cad += p.getDato();
+            cad += p.getDato() + "(" + p.getPeso() + ")";
             if (p.getSiguiente() != null) {
                 cad += " -> ";
             }

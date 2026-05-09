@@ -3,10 +3,27 @@ package modelo;
 public class TNodo {
     private String dato;
     private TNodo sig;
+    private int peso;
+    
     public TNodo() {
         dato = "";
         sig = null;
     }
+    
+    public TNodo(String dato, int peso) {
+    this.dato = dato;
+    this.peso = peso;
+    sig = null;
+    }
+    
+    public int getPeso() {
+    return peso;
+    }
+
+    public void setPeso(int peso) {
+    this.peso = peso;
+    }
+    
     public TNodo(String dato) {
         this.dato = dato;
         sig = null;

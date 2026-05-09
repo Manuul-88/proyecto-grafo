@@ -11,7 +11,9 @@ import java.awt.event.MouseListener;
 public class VentanaPrincipal extends JFrame {
 
     private TGrafo grafo;
-
+    private JSpinner spnPeso;
+    
+    
     private JTextField txtNodo;
     private JTextField txtOrigen;
     private JTextField txtDestino;
@@ -125,6 +127,9 @@ public class VentanaPrincipal extends JFrame {
         txtDestino = new JTextField(8);
         txtInicioBPF = new JTextField(8);
 
+        spnPeso = new JSpinner(new SpinnerNumberModel(0, 0, 999, 1));
+        spnPeso.setPreferredSize(new Dimension(65, 28));
+
         JButton btnAgregarNodo = new JButton("+ Nodo");
         JButton btnAgregarArista = new JButton("+ Arista");
         JButton btnBorrarArco = new JButton("- Arista");
@@ -138,8 +143,15 @@ public class VentanaPrincipal extends JFrame {
         panel.add(new JLabel("Origen:"));
         panel.add(txtOrigen);
 
+
         panel.add(new JLabel("Destino:"));
         panel.add(txtDestino);
+
+        panel.add(new JLabel("Peso:"));
+        panel.add(spnPeso);
+
+        panel.add(btnAgregarArista);
+        panel.add(btnBorrarArco);
 
         panel.add(btnAgregarArista);
         panel.add(btnBorrarArco);
@@ -264,21 +276,26 @@ public class VentanaPrincipal extends JFrame {
                     "No se pudo agregar el nodo.\nVerifica que no esté vacío o repetido.");
         }
     }
-
+    
     private void agregarArista() {
-        String origen = txtOrigen.getText().trim();
-        String destino = txtDestino.getText().trim();
+    String origen = txtOrigen.getText().trim();
+    String destino = txtDestino.getText().trim();
+    int peso = (int) spnPeso.getValue();
 
-        if (grafo.agregaArista(origen, destino)) {
-            panelDibujo.repaint();
-            txtAreaSalida.setText("Arista agregada correctamente:\n" + origen + " ↔ " + destino);
-            txtOrigen.setText("");
-            txtDestino.setText("");
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    "No se pudo agregar la arista.\nVerifica que ambos nodos existan, no estén repetidos y no sean el mismo.");
-        }
+    if (grafo.agregaAristaPeso(origen, destino, peso)) {
+        panelDibujo.repaint();
+        txtAreaSalida.setText("Arista con peso agregada correctamente:\n"
+                + origen + " ↔ " + destino + " | Peso: " + peso);
+
+        txtOrigen.setText("");
+        txtDestino.setText("");
+        spnPeso.setValue(1);
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "No se pudo agregar la arista con peso.\nVerifica que ambos nodos existan, no estén repetidos y no sean el mismo.");
     }
+}
+    
 
     private void mostrarAdyacencia() {
         txtAreaSalida.setText(grafo.obtieneListaAdy());

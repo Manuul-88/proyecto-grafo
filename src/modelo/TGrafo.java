@@ -56,6 +56,30 @@ public class TGrafo {
         }
         return agregada;
     }
+    
+    public boolean agregaAristaPeso(String origen, String destino, int peso) {
+    origen = normalizar(origen);
+    destino = normalizar(destino);
+    if (origen.isEmpty() || destino.isEmpty()) {
+        return false;
+    }
+    if (!listaAdy.containsKey(origen) || !listaAdy.containsKey(destino)) {
+        return false;
+    }
+    if (origen.equalsIgnoreCase(destino)) {
+        return false;
+    }
+    boolean agregada = false;
+    if (!listaAdy.get(origen).buscar(destino)) {
+        listaAdy.get(origen).insertarFinal(destino, peso);
+        agregada = true;
+    }
+    if (!listaAdy.get(destino).buscar(origen)) {
+        listaAdy.get(destino).insertarFinal(origen, peso);
+        agregada = true;
+    }
+    return agregada;
+    }
 
     public String obtieneListaAdy() {
         String cad = "Listas de adyacencia:\n\n";
