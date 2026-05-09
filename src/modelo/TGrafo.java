@@ -149,4 +149,25 @@ public class TGrafo {
     return eliminado1 || eliminado2;
 }
     
+    public boolean eliminarNodo(String nombre) {
+    nombre = normalizar(nombre);
+
+    if (nombre.isEmpty()) {
+        return false;
+    }
+
+    if (!listaAdy.containsKey(nombre)) {
+        return false;
+    }
+
+    listaAdy.remove(nombre);
+    visitados.remove(nombre);
+
+    for (TLista lista : listaAdy.values()) {
+        lista.eliminar(nombre);
+    }
+
+    return true;
+}
+    
 }//fin

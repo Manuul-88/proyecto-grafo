@@ -361,7 +361,10 @@ public class PanelGrafo extends JPanel {
             if (p2 != null && origen.compareTo(destino) < 0) {
 
                 // COLOR
-                if (peso <= 3) {
+                if (peso == 0) {
+                    g2.setColor(Color.WHITE);
+                }
+                else if (peso <= 3) {
                     g2.setColor(new Color(0, 255, 100));
                 }
                 else if (peso <= 7) {
@@ -533,4 +536,11 @@ public class PanelGrafo extends JPanel {
         g2.setColor(tema.textoSecundario);
         g2.drawString(texto, 18, 25);
     }
+    
+    public void eliminarNodoVisual(String nombre) {
+    posiciones.remove(nombre);
+    velocidades.remove(nombre);
+    repaint();
+}
+    
 }

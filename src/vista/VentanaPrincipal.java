@@ -121,7 +121,7 @@ public class VentanaPrincipal extends JFrame {
     private JPanel crearPanelControles() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 12));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-
+        
         txtNodo = new JTextField(8);
         txtOrigen = new JTextField(8);
         txtDestino = new JTextField(8);
@@ -131,6 +131,7 @@ public class VentanaPrincipal extends JFrame {
         spnPeso.setPreferredSize(new Dimension(65, 28));
 
         JButton btnAgregarNodo = new JButton("+ Nodo");
+        JButton btnEliminarNodo = new JButton("- Nodo");
         JButton btnAgregarArista = new JButton("+ Arista");
         JButton btnBorrarArco = new JButton("- Arista");
         JButton btnMostrar = new JButton("Adyacencia");
@@ -139,6 +140,7 @@ public class VentanaPrincipal extends JFrame {
         panel.add(new JLabel("Nodo:"));
         panel.add(txtNodo);
         panel.add(btnAgregarNodo);
+        panel.add(btnEliminarNodo);
 
         panel.add(new JLabel("Origen:"));
         panel.add(txtOrigen);
@@ -162,6 +164,7 @@ public class VentanaPrincipal extends JFrame {
         panel.add(btnMostrar);
 
         btnAgregarNodo.addActionListener(e -> agregarNodo());
+        btnEliminarNodo.addActionListener(e -> eliminarNodo());
         btnAgregarArista.addActionListener(e -> agregarArista());
         btnBorrarArco.addActionListener(e -> borrarArco());
         btnMostrar.addActionListener(e -> mostrarAdyacencia());
@@ -276,6 +279,20 @@ public class VentanaPrincipal extends JFrame {
                     "No se pudo agregar el nodo.\nVerifica que no esté vacío o repetido.");
         }
     }
+    
+    private void eliminarNodo() {
+    String nombre = txtNodo.getText().trim();
+
+    if (grafo.eliminarNodo(nombre)) {
+        panelDibujo.eliminarNodoVisual(nombre);
+        txtAreaSalida.setText("Nodo eliminado correctamente:\n" + nombre);
+        txtNodo.setText("");
+        panelDibujo.repaint();
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "No se pudo eliminar el nodo.\nVerifica que exista y que el campo Nodo no esté vacío.");
+    }
+}
     
     private void agregarArista() {
     String origen = txtOrigen.getText().trim();
