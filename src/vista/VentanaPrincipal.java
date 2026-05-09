@@ -117,61 +117,107 @@ public class VentanaPrincipal extends JFrame {
 
         return panel;
     }
-
+    
     private JPanel crearPanelControles() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 12));
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        
-        txtNodo = new JTextField(8);
-        txtOrigen = new JTextField(8);
-        txtDestino = new JTextField(8);
-        txtInicioBPF = new JTextField(8);
 
-        spnPeso = new JSpinner(new SpinnerNumberModel(0, 0, 999, 1));
-        spnPeso.setPreferredSize(new Dimension(65, 28));
+    JPanel panel = new JPanel(new GridLayout(2, 1, 8, 8));
+    panel.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
 
-        JButton btnAgregarNodo = new JButton("+ Nodo");
-        JButton btnEliminarNodo = new JButton("- Nodo");
-        JButton btnAgregarArista = new JButton("+ Arista");
-        JButton btnBorrarArco = new JButton("- Arista");
-        JButton btnMostrar = new JButton("Adyacencia");
-        JButton btnBPF = new JButton("BPF");
+    JPanel fila1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+    JPanel fila2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
 
-        panel.add(new JLabel("Nodo:"));
-        panel.add(txtNodo);
-        panel.add(btnAgregarNodo);
-        panel.add(btnEliminarNodo);
+    fila1.setOpaque(false);
+    fila2.setOpaque(false);
 
-        panel.add(new JLabel("Origen:"));
-        panel.add(txtOrigen);
+    txtNodo = new JTextField(8);
+    txtOrigen = new JTextField(8);
+    txtDestino = new JTextField(8);
+    txtInicioBPF = new JTextField(8);
 
+    spnPeso = new JSpinner(new SpinnerNumberModel(0, 0, 999, 1));
+    spnPeso.setPreferredSize(new Dimension(65, 28));
 
-        panel.add(new JLabel("Destino:"));
-        panel.add(txtDestino);
+    JButton btnAgregarNodo = new JButton("+ Nodo");
+    JButton btnEliminarNodo = new JButton("- Nodo");
 
-        panel.add(new JLabel("Peso:"));
-        panel.add(spnPeso);
+    JButton btnAgregarArista = new JButton("+ Arista");
+    JButton btnBorrarArco = new JButton("- Arista");
 
-        panel.add(btnAgregarArista);
-        panel.add(btnBorrarArco);
+    JButton btnMostrar = new JButton("Adyacencia");
+    JButton btnBPF = new JButton("BPF");
 
-        panel.add(btnAgregarArista);
-        panel.add(btnBorrarArco);
+    JButton btnAdyacente = new JButton("Adyacente");
+    JButton btnContar = new JButton("Contar");
+    JButton btnConsultarPeso = new JButton("Consultar Peso");
 
-        panel.add(new JLabel("Inicio:"));
-        panel.add(txtInicioBPF);
-        panel.add(btnBPF);
-        panel.add(btnMostrar);
+    // =========================
+    // FILA 1
+    // =========================
 
-        btnAgregarNodo.addActionListener(e -> agregarNodo());
-        btnEliminarNodo.addActionListener(e -> eliminarNodo());
-        btnAgregarArista.addActionListener(e -> agregarArista());
-        btnBorrarArco.addActionListener(e -> borrarArco());
-        btnMostrar.addActionListener(e -> mostrarAdyacencia());
-        btnBPF.addActionListener(e -> hacerBPF());
+    fila1.add(new JLabel("Nodo:"));
+    fila1.add(txtNodo);
 
-        return panel;
-    }
+    fila1.add(btnAgregarNodo);
+    fila1.add(btnEliminarNodo);
+
+    fila1.add(new JLabel("Origen:"));
+    fila1.add(txtOrigen);
+
+    fila1.add(new JLabel("Destino:"));
+    fila1.add(txtDestino);
+
+    fila1.add(new JLabel("Peso:"));
+    fila1.add(spnPeso);
+
+    fila1.add(btnAgregarArista);
+    fila1.add(btnBorrarArco);
+
+    // =========================
+    // FILA 2
+    // =========================
+
+    fila2.add(new JLabel("Inicio:"));
+    fila2.add(txtInicioBPF);
+
+    fila2.add(btnBPF);
+    fila2.add(btnMostrar);
+
+    fila2.add(btnAdyacente);
+    fila2.add(btnContar);
+    fila2.add(btnConsultarPeso);
+
+    // =========================
+    // PANEL PRINCIPAL
+    // =========================
+
+    panel.add(fila1);
+    panel.add(fila2);
+
+    // =========================
+    // LISTENERS
+    // =========================
+
+    btnAgregarNodo.addActionListener(e -> agregarNodo());
+
+    btnEliminarNodo.addActionListener(e -> eliminarNodo());
+
+    btnAgregarArista.addActionListener(e -> agregarArista());
+
+    btnBorrarArco.addActionListener(e -> borrarArco());
+
+    btnMostrar.addActionListener(e -> mostrarAdyacencia());
+
+    btnBPF.addActionListener(e -> hacerBPF());
+
+    btnAdyacente.addActionListener(e -> verificarAdyacencia());
+
+    btnContar.addActionListener(e -> contarConexiones());
+
+    btnConsultarPeso.addActionListener(e -> consultarPeso());
+
+    return panel;
+}
+    
 
     private void aplicarTema(TemaApp tema) {
         getContentPane().setBackground(tema.fondoVentana);
@@ -338,4 +384,75 @@ public class VentanaPrincipal extends JFrame {
                     "No se pudo borrar la arista.\nVerifica que ambos nodos existan y que estén conectados.");
         }
     }
+    
+    private void verificarAdyacencia() {
+
+    String origen = txtOrigen.getText().trim();
+    String destino = txtDestino.getText().trim();
+
+    if (grafo.adyacente(origen, destino)) {
+        txtAreaSalida.setText(origen + " y " + destino + " SÍ son adyacentes.");
+    } else {
+        txtAreaSalida.setText(origen + " y " + destino + " NO son adyacentes.");
+    }
+}
+    private void contarConexiones() {
+
+    String nodo = txtNodo.getText().trim();
+
+    if (!grafo.existeNodo(nodo)) {
+
+        JOptionPane.showMessageDialog(this,
+                "El nodo no existe.");
+
+        return;
+    }
+
+    int total = grafo.getListaAdy()
+            .get(nodo)
+            .contar();
+
+    txtAreaSalida.setText(
+            "El nodo " + nodo +
+            " tiene " + total +
+            " conexiones."
+    );
+}
+    
+    private void consultarPeso() {
+
+    String origen = txtOrigen.getText().trim();
+    String destino = txtDestino.getText().trim();
+
+    if (!grafo.existeNodo(origen) ||
+        !grafo.existeNodo(destino)) {
+
+        JOptionPane.showMessageDialog(this,
+                "Algún nodo no existe.");
+
+        return;
+    }
+
+    int peso = grafo.getListaAdy()
+            .get(origen)
+            .obtenerPeso(destino);
+
+    if (peso == -1) {
+
+        txtAreaSalida.setText(
+                "No existe conexión entre "
+                + origen + " y " + destino
+        );
+
+    } else {
+
+        txtAreaSalida.setText(
+                "Peso entre "
+                + origen + " y "
+                + destino + " = " + peso
+        );
+    }
+}
+    
+    
 }

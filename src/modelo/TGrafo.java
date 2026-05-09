@@ -170,4 +170,22 @@ public class TGrafo {
     return true;
 }
     
+    public boolean adyacente(String origen, String destino) {
+
+    origen = normalizar(origen);
+    destino = normalizar(destino);
+
+    if (origen.isEmpty() || destino.isEmpty()) {
+        return false;
+    }
+
+    if (!listaAdy.containsKey(origen) ||
+        !listaAdy.containsKey(destino)) {
+
+        return false;
+    }
+
+    return listaAdy.get(origen).buscar(destino);
+}
+    
 }//fin
