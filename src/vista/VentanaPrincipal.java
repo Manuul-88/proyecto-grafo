@@ -1,3 +1,4 @@
+//ventana principal
 package vista;
 
 import modelo.TGrafo;
@@ -32,7 +33,7 @@ public class VentanaPrincipal extends JFrame {
     public VentanaPrincipal() {
         grafo = new TGrafo();
 
-        setTitle("Calculadora Visual de Grafos");
+        setTitle("Calculadora de Grafos");
         setSize(1450, 850);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -56,27 +57,29 @@ public class VentanaPrincipal extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
 
-        lblTitulo = new JLabel("Calculadora Visual de Grafos");
+        lblTitulo = new JLabel("Calculadora de Grafos");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 24));
 
         JPanel opciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         opciones.setOpaque(false);
 
-        JLabel lblTema = new JLabel("Tema:");
+        JLabel lblTema = new JLabel("Tema");
 
         JComboBox<String> comboTema = new JComboBox<>(new String[]{
-        "Halo", "DD", "Interestelar", "Ego", "Neon", "Cyberpunk"
+                "Halo", "DD", "Interestelar", "Ego", "Neon", "Cyberpunk"
         });
 
-        JCheckBox chkBezier = new JCheckBox("Curvas Bézier");
-        JCheckBox chkMover = new JCheckBox("Modo mover");
-        JCheckBox chkFisica = new JCheckBox("Física", true);
+        JCheckBox chkDirigido = new JCheckBox("Dirigido");
+        JCheckBox chkBezier = new JCheckBox("Curvas");
+        JCheckBox chkMover = new JCheckBox("Mover nodos");
+        JCheckBox chkFisica = new JCheckBox("Fisica", true);
         JCheckBox chkMinimapa = new JCheckBox("Minimapa", true);
 
         JButton btnZoomMas = new JButton("Zoom +");
         JButton btnZoomMenos = new JButton("Zoom -");
         JButton btnResetZoom = new JButton("Reset");
 
+        chkDirigido.setOpaque(false);
         chkBezier.setOpaque(false);
         chkMover.setOpaque(false);
         chkFisica.setOpaque(false);
@@ -93,12 +96,25 @@ public class VentanaPrincipal extends JFrame {
         chkFisica.addActionListener(e -> panelDibujo.setFisicaActiva(chkFisica.isSelected()));
         chkMinimapa.addActionListener(e -> panelDibujo.setMostrarMinimapa(chkMinimapa.isSelected()));
 
+        chkDirigido.addActionListener(e -> {
+            grafo.setDirigido(chkDirigido.isSelected());
+            panelDibujo.setDirigido(chkDirigido.isSelected());
+
+            txtAreaSalida.setText(
+                    "Modo cambiado a " +
+                            (chkDirigido.isSelected() ? "DIRIGIDO" : "NO DIRIGIDO")
+            );
+
+            panelDibujo.repaint();
+        });
+
         btnZoomMas.addActionListener(e -> panelDibujo.acercarZoom());
         btnZoomMenos.addActionListener(e -> panelDibujo.alejarZoom());
         btnResetZoom.addActionListener(e -> panelDibujo.resetZoom());
 
         opciones.add(lblTema);
         opciones.add(comboTema);
+        opciones.add(chkDirigido);
         opciones.add(chkBezier);
         opciones.add(chkMinimapa);
         opciones.add(chkMover);
@@ -122,7 +138,7 @@ public class VentanaPrincipal extends JFrame {
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
         contenido.setOpaque(false);
 
-        JPanel cardResultados = crearCard("RESULTADOS / ADYACENCIA");
+        JPanel cardResultados = crearCard("RESULTADOS");
 
         txtAreaSalida = new JTextArea();
         txtAreaSalida.setEditable(false);
@@ -138,47 +154,39 @@ public class VentanaPrincipal extends JFrame {
         JPanel gridAlgoritmos = new JPanel(new GridLayout(3, 2, 8, 8));
         gridAlgoritmos.setOpaque(false);
 
-        JButton btnDFS = new JButton("BPF / DFS");
+        JButton btnDFS = new JButton("BPF");
         JButton btnBFS = new JButton("BFS");
         JButton btnDijkstra = new JButton("Dijkstra");
-        JButton btnPrim = new JButton("Prim");
         JButton btnKruskal = new JButton("Kruskal");
 
         gridAlgoritmos.add(btnDFS);
         gridAlgoritmos.add(btnBFS);
         gridAlgoritmos.add(btnDijkstra);
-        gridAlgoritmos.add(btnPrim);
         gridAlgoritmos.add(btnKruskal);
 
         cardAlgoritmos.add(gridAlgoritmos, BorderLayout.CENTER);
 
-        JPanel cardEstadisticas = crearCard("ESTADÍSTICAS");
+        JPanel cardStats = crearCard("ESTADISTICAS");
         JPanel datos = new JPanel(new GridLayout(5, 1, 4, 4));
         datos.setOpaque(false);
 
-        datos.add(new JLabel("Nodos: dinámico"));
-        datos.add(new JLabel("Aristas: dinámico"));
-        datos.add(new JLabel("Peso total: dinámico"));
-        datos.add(new JLabel("Densidad: dinámico"));
-
-        JButton btnEstadisticas = new JButton("Ver estadísticas");
+        JButton btnEstadisticas = new JButton("Ver estadisticas");
         datos.add(btnEstadisticas);
 
-        cardEstadisticas.add(datos, BorderLayout.CENTER);
+        cardStats.add(datos, BorderLayout.CENTER);
 
         contenido.add(cardResultados);
         contenido.add(Box.createVerticalStrut(10));
         contenido.add(cardAlgoritmos);
         contenido.add(Box.createVerticalStrut(10));
-        contenido.add(cardEstadisticas);
+        contenido.add(cardStats);
 
         panel.add(contenido, BorderLayout.NORTH);
 
         btnDFS.addActionListener(e -> hacerBPF());
-        btnBFS.addActionListener(e -> txtAreaSalida.setText("BFS todavía no implementado."));
-        btnDijkstra.addActionListener(e -> txtAreaSalida.setText("Dijkstra todavía no implementado."));
-        btnPrim.addActionListener(e -> txtAreaSalida.setText("Prim todavía no implementado."));
-        btnKruskal.addActionListener(e -> txtAreaSalida.setText("Kruskal todavía no implementado."));
+        btnBFS.addActionListener(e -> hacerBFS());
+        btnDijkstra.addActionListener(e -> hacerDijkstra());
+        btnKruskal.addActionListener(e -> hacerKruskal());
         btnEstadisticas.addActionListener(e -> mostrarEstadisticas());
 
         return panel;
@@ -200,15 +208,15 @@ public class VentanaPrincipal extends JFrame {
 
         JPanel cardNodos = crearCard("NODOS");
         JPanel cardAristas = crearCard("ARISTAS");
-        JPanel cardRecorridos = crearCard("RECORRIDOS / RUTAS");
+        JPanel cardRutas = crearCard("RECORRIDOS Y RUTAS");
 
-        JButton btnAgregarNodo = new JButton("+ Nodo");
-        JButton btnEliminarNodo = new JButton("- Nodo");
+        JButton btnAgregarNodo = new JButton("Agregar Nodo");
+        JButton btnEliminarNodo = new JButton("Borrar Nodo");
         JButton btnEditarNodo = new JButton("Editar nodo");
         JButton btnContar = new JButton("Contar conexiones");
 
         JPanel filaNodo = crearFila();
-        filaNodo.add(new JLabel("Nodo:"));
+        filaNodo.add(new JLabel("Nodo"));
         filaNodo.add(txtNodo);
         filaNodo.add(btnAgregarNodo);
         filaNodo.add(btnEliminarNodo);
@@ -220,18 +228,18 @@ public class VentanaPrincipal extends JFrame {
         cardNodos.add(filaNodo, BorderLayout.NORTH);
         cardNodos.add(filaNodo2, BorderLayout.CENTER);
 
-        JButton btnAgregarArista = new JButton("+ Arista");
-        JButton btnBorrarArco = new JButton("- Arista");
+        JButton btnAgregarArista = new JButton("Agregar Arista");
+        JButton btnBorrarArco = new JButton("Borrar Arista");
         JButton btnEditarPeso = new JButton("Editar peso");
-        JButton btnAdyacente = new JButton("¿Son adyacentes?");
+        JButton btnAdyacente = new JButton("Son adyacentes");
         JButton btnConsultarPeso = new JButton("Consultar peso");
 
         JPanel filaArista = crearFila();
-        filaArista.add(new JLabel("Origen:"));
+        filaArista.add(new JLabel("Origen"));
         filaArista.add(txtOrigen);
-        filaArista.add(new JLabel("Destino:"));
+        filaArista.add(new JLabel("Destino"));
         filaArista.add(txtDestino);
-        filaArista.add(new JLabel("Peso:"));
+        filaArista.add(new JLabel("Peso"));
         filaArista.add(spnPeso);
 
         JPanel filaArista2 = crearFila();
@@ -250,28 +258,28 @@ public class VentanaPrincipal extends JFrame {
         JButton btnBPF = new JButton("BPF");
         JButton btnBFS = new JButton("BFS");
         JButton btnMostrar = new JButton("Lista de adyacencia");
-        JButton btnResaltarRuta = new JButton("Resaltar ruta");
+        JButton btnRuta = new JButton("Resaltar ruta");
         JButton btnQuitarResaltado = new JButton("Quitar resaltado");
 
         JPanel filaRecorrido = crearFila();
-        filaRecorrido.add(new JLabel("Inicio:"));
+        filaRecorrido.add(new JLabel("Inicio"));
         filaRecorrido.add(txtInicioBPF);
-        filaRecorrido.add(new JLabel("Destino:"));
+        filaRecorrido.add(new JLabel("Destino"));
         filaRecorrido.add(txtDestinoAlgoritmo);
 
         JPanel filaRecorrido2 = crearFila();
         filaRecorrido2.add(btnBPF);
         filaRecorrido2.add(btnBFS);
         filaRecorrido2.add(btnMostrar);
-        filaRecorrido2.add(btnResaltarRuta);
+        filaRecorrido2.add(btnRuta);
         filaRecorrido2.add(btnQuitarResaltado);
 
-        cardRecorridos.add(filaRecorrido, BorderLayout.NORTH);
-        cardRecorridos.add(filaRecorrido2, BorderLayout.CENTER);
+        cardRutas.add(filaRecorrido, BorderLayout.NORTH);
+        cardRutas.add(filaRecorrido2, BorderLayout.CENTER);
 
         panel.add(cardNodos);
         panel.add(cardAristas);
-        panel.add(cardRecorridos);
+        panel.add(cardRutas);
 
         btnAgregarNodo.addActionListener(e -> agregarNodo());
         btnEliminarNodo.addActionListener(e -> eliminarNodo());
@@ -285,9 +293,9 @@ public class VentanaPrincipal extends JFrame {
         btnConsultarPeso.addActionListener(e -> consultarPeso());
 
         btnBPF.addActionListener(e -> hacerBPF());
-        btnBFS.addActionListener(e -> txtAreaSalida.setText("BFS todavía no implementado."));
+        btnBFS.addActionListener(e -> hacerBFS());
         btnMostrar.addActionListener(e -> mostrarAdyacencia());
-        btnResaltarRuta.addActionListener(e -> resaltarRuta());
+        btnRuta.addActionListener(e -> resaltarRuta());
         btnQuitarResaltado.addActionListener(e -> quitarResaltado());
 
         return panel;
@@ -295,6 +303,7 @@ public class VentanaPrincipal extends JFrame {
 
     private JPanel crearCard(String titulo) {
         JPanel panel = new JPanel(new BorderLayout(8, 8));
+
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                         BorderFactory.createLineBorder(new Color(90, 120, 180)),
@@ -305,6 +314,7 @@ public class VentanaPrincipal extends JFrame {
                 ),
                 BorderFactory.createEmptyBorder(8, 8, 8, 8)
         ));
+
         return panel;
     }
 
@@ -365,6 +375,7 @@ public class VentanaPrincipal extends JFrame {
 
             if (c instanceof JSpinner spinner) {
                 JComponent editor = spinner.getEditor();
+
                 if (editor instanceof JSpinner.DefaultEditor defaultEditor) {
                     defaultEditor.getTextField().setBackground(tema.campoFondo);
                     defaultEditor.getTextField().setForeground(tema.campoTexto);
@@ -425,11 +436,11 @@ public class VentanaPrincipal extends JFrame {
 
         if (grafo.agregarNodo(nombre)) {
             panelDibujo.agregarNodoVisual(nombre);
-            txtAreaSalida.setText("Nodo agregado correctamente:\n" + nombre);
+            txtAreaSalida.setText("Nodo agregado\n" + nombre);
             txtNodo.setText("");
         } else {
             JOptionPane.showMessageDialog(this,
-                    "No se pudo agregar el nodo.\nVerifica que no esté vacío o repetido.");
+                    "No se pudo agregar\nTal vez ya existe");
         }
     }
 
@@ -438,12 +449,12 @@ public class VentanaPrincipal extends JFrame {
 
         if (grafo.eliminarNodo(nombre)) {
             panelDibujo.eliminarNodoVisual(nombre);
-            txtAreaSalida.setText("Nodo eliminado correctamente:\n" + nombre);
+            txtAreaSalida.setText("Nodo borrado\n" + nombre);
             txtNodo.setText("");
             panelDibujo.repaint();
         } else {
             JOptionPane.showMessageDialog(this,
-                    "No se pudo eliminar el nodo.\nVerifica que exista y que el campo Nodo no esté vacío.");
+                    "No se pudo borrar\nRevisa que exista");
         }
     }
 
@@ -451,11 +462,11 @@ public class VentanaPrincipal extends JFrame {
         String actual = txtNodo.getText().trim();
 
         if (!grafo.existeNodo(actual)) {
-            JOptionPane.showMessageDialog(this, "El nodo actual no existe.");
+            JOptionPane.showMessageDialog(this, "Ese nodo no existe");
             return;
         }
 
-        String nuevo = JOptionPane.showInputDialog(this, "Nuevo nombre para el nodo:");
+        String nuevo = JOptionPane.showInputDialog(this, "Nuevo nombre para el nodo");
 
         if (nuevo == null || nuevo.trim().isEmpty()) {
             return;
@@ -463,11 +474,11 @@ public class VentanaPrincipal extends JFrame {
 
         if (grafo.editarNodo(actual, nuevo.trim())) {
             panelDibujo.renombrarNodoVisual(actual, nuevo.trim());
-            txtAreaSalida.setText("Nodo editado:\n" + actual + " -> " + nuevo.trim());
+            txtAreaSalida.setText("Nodo editado\n" + actual + " -> " + nuevo.trim());
             txtNodo.setText("");
             panelDibujo.repaint();
         } else {
-            JOptionPane.showMessageDialog(this, "No se pudo editar el nodo.");
+            JOptionPane.showMessageDialog(this, "No se pudo editar");
         }
     }
 
@@ -478,15 +489,16 @@ public class VentanaPrincipal extends JFrame {
 
         if (grafo.agregaAristaPeso(origen, destino, peso)) {
             panelDibujo.repaint();
-            txtAreaSalida.setText("Arista con peso agregada correctamente:\n"
-                    + origen + " ↔ " + destino + " | Peso: " + peso);
+
+            txtAreaSalida.setText("Conexion creada\n"
+                    + origen + " - " + destino + " | Peso " + peso);
 
             txtOrigen.setText("");
             txtDestino.setText("");
-            spnPeso.setValue(1);
+            spnPeso.setValue(0);
         } else {
             JOptionPane.showMessageDialog(this,
-                    "No se pudo agregar la arista con peso.\nVerifica que ambos nodos existan, no estén repetidos y no sean el mismo.");
+                    "No se pudo conectar\nRevisa los nodos");
         }
     }
 
@@ -496,12 +508,12 @@ public class VentanaPrincipal extends JFrame {
 
         if (grafo.borrarArco(origen, destino)) {
             panelDibujo.repaint();
-            txtAreaSalida.setText("Arista eliminada correctamente:\n" + origen + " - " + destino);
+            txtAreaSalida.setText("Conexion borrada\n" + origen + " - " + destino);
             txtOrigen.setText("");
             txtDestino.setText("");
         } else {
             JOptionPane.showMessageDialog(this,
-                    "No se pudo borrar la arista.\nVerifica que ambos nodos existan y que estén conectados.");
+                    "No encontre esa conexion");
         }
     }
 
@@ -511,11 +523,11 @@ public class VentanaPrincipal extends JFrame {
         int nuevoPeso = (int) spnPeso.getValue();
 
         if (grafo.editarPeso(origen, destino, nuevoPeso)) {
-            txtAreaSalida.setText("Peso editado correctamente:\n"
-                    + origen + " - " + destino + " | Nuevo peso: " + nuevoPeso);
+            txtAreaSalida.setText("Peso actualizado\n"
+                    + origen + " - " + destino + " | Peso " + nuevoPeso);
             panelDibujo.repaint();
         } else {
-            JOptionPane.showMessageDialog(this, "No se pudo editar el peso.");
+            JOptionPane.showMessageDialog(this, "No se pudo cambiar el peso");
         }
     }
 
@@ -526,7 +538,8 @@ public class VentanaPrincipal extends JFrame {
     private void hacerBPF() {
         String inicio = txtInicioBPF.getText().trim();
         String resultado = grafo.busquedaProfundidad(inicio);
-        txtAreaSalida.setText("Recorrido en profundidad:\n" + resultado);
+
+        txtAreaSalida.setText("Recorrido BPF\n" + resultado);
     }
 
     private void verificarAdyacencia() {
@@ -534,9 +547,9 @@ public class VentanaPrincipal extends JFrame {
         String destino = txtDestino.getText().trim();
 
         if (grafo.adyacente(origen, destino)) {
-            txtAreaSalida.setText(origen + " y " + destino + " SÍ son adyacentes.");
+            txtAreaSalida.setText(origen + " y " + destino + " si estan conectados");
         } else {
-            txtAreaSalida.setText(origen + " y " + destino + " NO son adyacentes.");
+            txtAreaSalida.setText(origen + " y " + destino + " no estan conectados");
         }
     }
 
@@ -545,13 +558,13 @@ public class VentanaPrincipal extends JFrame {
 
         if (!grafo.existeNodo(nodo)) {
             JOptionPane.showMessageDialog(this,
-                    "El nodo no existe.");
+                    "El nodo no existe");
             return;
         }
 
         int total = grafo.getListaAdy().get(nodo).contar();
 
-        txtAreaSalida.setText("El nodo " + nodo + " tiene " + total + " conexiones.");
+        txtAreaSalida.setText("El nodo " + nodo + " tiene " + total + " conexiones");
     }
 
     private void consultarPeso() {
@@ -559,14 +572,14 @@ public class VentanaPrincipal extends JFrame {
         String destino = txtDestino.getText().trim();
 
         if (!grafo.existeNodo(origen) || !grafo.existeNodo(destino)) {
-            JOptionPane.showMessageDialog(this, "Algún nodo no existe.");
+            JOptionPane.showMessageDialog(this, "Algun nodo no existe");
             return;
         }
 
         int peso = grafo.getListaAdy().get(origen).obtenerPeso(destino);
 
         if (peso == -1) {
-            txtAreaSalida.setText("No existe conexión entre " + origen + " y " + destino);
+            txtAreaSalida.setText("No hay conexion entre " + origen + " y " + destino);
         } else {
             txtAreaSalida.setText("Peso entre " + origen + " y " + destino + " = " + peso);
         }
@@ -579,21 +592,21 @@ public class VentanaPrincipal extends JFrame {
         String ruta = grafo.obtenerRutaDFS(origen, destino);
 
         if (ruta.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No se encontró ruta.");
+            JOptionPane.showMessageDialog(this, "No se encontro ruta");
             return;
         }
 
         panelDibujo.resaltarRuta(ruta);
-        txtAreaSalida.setText("Ruta resaltada:\n" + ruta);
+        txtAreaSalida.setText("Ruta marcada\n" + ruta);
     }
 
     private void quitarResaltado() {
         panelDibujo.limpiarRutaResaltada();
-        txtAreaSalida.setText("Resaltado de ruta eliminado.");
+        txtAreaSalida.setText("Ya se quito la ruta marcada");
     }
 
     private void mostrarEstadisticas() {
-        int nodos = grafo.contarNodos();
+        int nodos = grafo.numeroNodos();
         int aristas = grafo.contarAristas();
         int pesoTotal = grafo.pesoTotal();
 
@@ -604,11 +617,33 @@ public class VentanaPrincipal extends JFrame {
         }
 
         txtAreaSalida.setText(
-                "ESTADÍSTICAS DEL GRAFO\n\n"
-                        + "Nodos: " + nodos + "\n"
-                        + "Aristas: " + aristas + "\n"
-                        + "Peso total: " + pesoTotal + "\n"
-                        + "Densidad: " + densidad
+                "ESTADISTICAS DEL GRAFO\n\n"
+                        + "Nodos " + nodos + "\n"
+                        + "Aristas " + aristas + "\n"
+                        + "Peso total " + pesoTotal + "\n"
+                        + "Densidad " + densidad
         );
+    }
+    
+    private void hacerBFS() {
+        String inicio = txtInicioBPF.getText().trim();
+
+        String resultado = grafo.busquedaAmplitud(inicio);
+
+        txtAreaSalida.setText("Recorrido BFS\n" + resultado);
+    }
+
+    private void hacerDijkstra() {
+        String inicio = txtInicioBPF.getText().trim();
+
+        String resultado = grafo.dijkstra(inicio);
+
+        txtAreaSalida.setText(resultado);
+    }
+
+    private void hacerKruskal() {
+        String resultado = grafo.kruskal();
+
+        txtAreaSalida.setText(resultado);
     }
 }
