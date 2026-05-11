@@ -1,3 +1,4 @@
+//panel del grafo
 package vista;
 
 import modelo.TGrafo;
@@ -32,9 +33,11 @@ public class PanelGrafo extends JPanel {
     private double zoom = 1.0;
     private boolean mostrarMinimapa = true;
     private boolean usarBezier = false;
-    
+
     private boolean parpadeoRuta = true;
     private int contadorParpadeo = 0;
+
+    private boolean dirigido = false;
 
     private java.util.ArrayList<String> rutaResaltada = new java.util.ArrayList<>();
 
@@ -50,14 +53,13 @@ public class PanelGrafo extends JPanel {
         configurarMouse();
 
         timer = new Timer(16, e -> {
-    if (fisicaActiva) {
-        actualizarFisica();
-    }
+            if (fisicaActiva) {
+                actualizarFisica();
+            }
 
-    contadorParpadeo++;
-
-    repaint();
-});
+            contadorParpadeo++;
+            repaint();
+        });
 
         timer.start();
     }
@@ -74,6 +76,11 @@ public class PanelGrafo extends JPanel {
         this.tema = tema;
         setBackground(tema.fondoCanvas);
         setBorder(BorderFactory.createLineBorder(tema.botonHover, 2));
+        repaint();
+    }
+
+    public void setDirigido(boolean dirigido) {
+        this.dirigido = dirigido;
         repaint();
     }
 
@@ -176,6 +183,7 @@ public class PanelGrafo extends JPanel {
     }
 
     private void actualizarFisica() {
+        // movimiento mas suave
         double repulsion = 8500;
         double atraccion = 0.008;
         double distanciaIdeal = 160;
@@ -305,214 +313,274 @@ public class PanelGrafo extends JPanel {
             dibujarMinimapa(g2);
         }
     }
-    
+
     private void dibujarFondo(Graphics2D g2) {
-    g2.setColor(tema.fondoCanvas);
-    g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.setColor(tema.fondoCanvas);
+        g2.fillRect(0, 0, getWidth(), getHeight());
 
-    if (tema.nombre.equals("Halo")) {
-        g2.setColor(new Color(120, 220, 190, 40));
-        for (int i = 0; i < 9; i++) {
-            int size = 180 + i * 85;
-            g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size);
-        }
+        if (tema.nombre.equals("Halo")) {
+            g2.setColor(new Color(120, 220, 190, 40));
 
-        g2.setColor(new Color(90, 255, 180, 35));
-        for (int i = 0; i < 35; i++) {
-            int x = (i * 113) % Math.max(getWidth(), 1);
-            int y = (i * 67) % Math.max(getHeight(), 1);
-            g2.fillOval(x, y, 2, 2);
-        }
-    }
+            for (int i = 0; i < 9; i++) {
+                int size = 180 + i * 85;
+                g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size);
+            }
 
-    if (tema.nombre.equals("DD")) {
-        int centroY = getHeight() / 2;
+            g2.setColor(new Color(90, 255, 180, 35));
 
-        g2.setColor(new Color(255, 30, 30, 45));
-
-        for (int y = 80; y < getHeight(); y += 90) {
-            for (int x = 0; x < getWidth(); x += 8) {
-                int onda = (int) (Math.sin((x + y) * 0.035) * 18);
-                g2.fillOval(x, y + onda, 3, 3);
+            for (int i = 0; i < 35; i++) {
+                int x = (i * 113) % Math.max(getWidth(), 1);
+                int y = (i * 67) % Math.max(getHeight(), 1);
+                g2.fillOval(x, y, 2, 2);
             }
         }
 
-        g2.setColor(new Color(255, 0, 0, 80));
-        for (int i = 0; i < 4; i++) {
-            g2.drawOval(getWidth() / 2 - 140 - i * 55, centroY - 140 - i * 55,
-                    280 + i * 110, 280 + i * 110);
+        if (tema.nombre.equals("DD")) {
+            int centroY = getHeight() / 2;
+
+            g2.setColor(new Color(255, 30, 30, 45));
+
+            for (int y = 80; y < getHeight(); y += 90) {
+                for (int x = 0; x < getWidth(); x += 8) {
+                    int onda = (int) (Math.sin((x + y) * 0.035) * 18);
+                    g2.fillOval(x, y + onda, 3, 3);
+                }
+            }
+
+            g2.setColor(new Color(255, 0, 0, 80));
+
+            for (int i = 0; i < 4; i++) {
+                g2.drawOval(getWidth() / 2 - 140 - i * 55, centroY - 140 - i * 55,
+                        280 + i * 110, 280 + i * 110);
+            }
+        }
+
+        if (tema.nombre.equals("Interestelar")) {
+            g2.setColor(new Color(180, 220, 255, 120));
+
+            for (int i = 0; i < 120; i++) {
+                int x = (i * 97) % Math.max(getWidth(), 1);
+                int y = (i * 53) % Math.max(getHeight(), 1);
+                int s = i % 5 == 0 ? 3 : 2;
+                g2.fillOval(x, y, s, s);
+            }
+
+            g2.setColor(new Color(70, 120, 255, 40));
+
+            for (int i = 0; i < 7; i++) {
+                int size = 220 + i * 95;
+                g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size / 2);
+            }
+        }
+
+        if (tema.nombre.equals("Ego")) {
+            g2.setColor(new Color(0, 120, 255, 45));
+
+            for (int x = -getHeight(); x < getWidth(); x += 70) {
+                g2.drawLine(x, 0, x + getHeight(), getHeight());
+            }
+
+            g2.setColor(new Color(0, 255, 220, 40));
+
+            for (int i = 0; i < 8; i++) {
+                int size = 130 + i * 75;
+                g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size);
+            }
+        }
+
+        if (tema.nombre.equals("Neon")) {
+            g2.setColor(new Color(0, 255, 220, 50));
+
+            for (int y = 0; y < getHeight(); y += 38) {
+                g2.drawLine(0, y, getWidth(), y);
+            }
+
+            g2.setColor(new Color(180, 0, 255, 45));
+
+            for (int x = 0; x < getWidth(); x += 38) {
+                g2.drawLine(x, 0, x, getHeight());
+            }
+
+            g2.setColor(new Color(255, 255, 255, 80));
+
+            for (int i = 0; i < 50; i++) {
+                int x = (i * 89) % Math.max(getWidth(), 1);
+                int y = (i * 47) % Math.max(getHeight(), 1);
+                g2.fillOval(x, y, 2, 2);
+            }
+        }
+
+        if (tema.nombre.equals("Cyberpunk")) {
+            g2.setColor(new Color(255, 0, 180, 65));
+
+            for (int y = 0; y < getHeight(); y += 45) {
+                g2.drawLine(0, y, getWidth(), y);
+            }
+
+            g2.setColor(new Color(0, 255, 255, 55));
+
+            for (int x = 0; x < getWidth(); x += 45) {
+                g2.drawLine(x, 0, x, getHeight());
+            }
+
+            g2.setColor(new Color(255, 240, 80, 50));
+
+            for (int x = -getHeight(); x < getWidth(); x += 120) {
+                g2.drawLine(x, getHeight(), x + getHeight(), 0);
+            }
         }
     }
 
-    if (tema.nombre.equals("Interestelar")) {
-        g2.setColor(new Color(180, 220, 255, 120));
-        for (int i = 0; i < 120; i++) {
-            int x = (i * 97) % Math.max(getWidth(), 1);
-            int y = (i * 53) % Math.max(getHeight(), 1);
-            int s = i % 5 == 0 ? 3 : 2;
-            g2.fillOval(x, y, s, s);
-        }
-
-        g2.setColor(new Color(70, 120, 255, 40));
-        for (int i = 0; i < 7; i++) {
-            int size = 220 + i * 95;
-            g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size / 2);
-        }
-    }
-
-    if (tema.nombre.equals("Ego")) {
-        g2.setColor(new Color(0, 120, 255, 45));
-        for (int x = -getHeight(); x < getWidth(); x += 70) {
-            g2.drawLine(x, 0, x + getHeight(), getHeight());
-        }
-
-        g2.setColor(new Color(0, 255, 220, 40));
-        for (int i = 0; i < 8; i++) {
-            int size = 130 + i * 75;
-            g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size);
-        }
-    }
-
-    if (tema.nombre.equals("Neon")) {
-        g2.setColor(new Color(0, 255, 220, 50));
-        for (int y = 0; y < getHeight(); y += 38) {
-            g2.drawLine(0, y, getWidth(), y);
-        }
-
-        g2.setColor(new Color(180, 0, 255, 45));
-        for (int x = 0; x < getWidth(); x += 38) {
-            g2.drawLine(x, 0, x, getHeight());
-        }
-
-        g2.setColor(new Color(255, 255, 255, 80));
-        for (int i = 0; i < 50; i++) {
-            int x = (i * 89) % Math.max(getWidth(), 1);
-            int y = (i * 47) % Math.max(getHeight(), 1);
-            g2.fillOval(x, y, 2, 2);
-        }
-    }
-
-    if (tema.nombre.equals("Cyberpunk")) {
-        g2.setColor(new Color(255, 0, 180, 65));
-        for (int y = 0; y < getHeight(); y += 45) {
-            g2.drawLine(0, y, getWidth(), y);
-        }
-
-        g2.setColor(new Color(0, 255, 255, 55));
-        for (int x = 0; x < getWidth(); x += 45) {
-            g2.drawLine(x, 0, x, getHeight());
-        }
-
-        g2.setColor(new Color(255, 240, 80, 50));
-        for (int x = -getHeight(); x < getWidth(); x += 120) {
-            g2.drawLine(x, getHeight(), x + getHeight(), 0);
-        }
-    }
-}
-    
     private void dibujarAristas(Graphics2D g2) {
-    for (Map.Entry<String, TLista> entry : grafo.getListaAdy().entrySet()) {
+        for (Map.Entry<String, TLista> entry : grafo.getListaAdy().entrySet()) {
 
-        String origen = entry.getKey();
-        Point2D.Double p1 = posiciones.get(origen);
+            String origen = entry.getKey();
+            Point2D.Double p1 = posiciones.get(origen);
 
-        if (p1 == null) continue;
+            if (p1 == null) continue;
 
-        TNodo aux = entry.getValue().getCabecera().getSiguiente();
+            TNodo aux = entry.getValue().getCabecera().getSiguiente();
 
-        while (aux != null) {
-            String destino = aux.getDato();
-            int peso = aux.getPeso();
+            while (aux != null) {
+                String destino = aux.getDato();
+                int peso = aux.getPeso();
 
-            Point2D.Double p2 = posiciones.get(destino);
+                Point2D.Double p2 = posiciones.get(destino);
 
-            if (p2 != null && origen.compareTo(destino) < 0) {
+                if (p2 != null && debeDibujarArista(origen, destino)) {
 
-                boolean resaltada = aristaEnRuta(origen, destino);
+                    boolean resaltada = aristaEnRuta(origen, destino);
 
-                if (resaltada) {
-                    boolean visible = !parpadeoRuta || (contadorParpadeo / 25) % 2 == 0;
+                    if (resaltada) {
+                        boolean visible = !parpadeoRuta || (contadorParpadeo / 25) % 2 == 0;
 
-                    if (visible) {
-                        g2.setColor(Color.CYAN);
-                        g2.setStroke(new BasicStroke(7, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                        if (visible) {
+                            g2.setColor(Color.CYAN);
+                            g2.setStroke(new BasicStroke(7, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                        } else {
+                            g2.setColor(new Color(255, 255, 255, 80));
+                            g2.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                        }
+
                     } else {
-                        g2.setColor(new Color(255, 255, 255, 80));
-                        g2.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                        if (peso == 0) {
+                            g2.setColor(Color.WHITE);
+                        } else if (peso <= 3) {
+                            g2.setColor(new Color(0, 255, 100));
+                        } else if (peso <= 7) {
+                            g2.setColor(new Color(255, 230, 0));
+                        } else {
+                            g2.setColor(new Color(255, 60, 60));
+                        }
+
+                        float grosor = 2.0f + Math.min(peso, 10) * 0.35f;
+
+                        g2.setStroke(new BasicStroke(
+                                grosor,
+                                BasicStroke.CAP_ROUND,
+                                BasicStroke.JOIN_ROUND
+                        ));
                     }
 
-                } else {
-                    if (peso == 0) {
-                        g2.setColor(Color.WHITE);
-                    } else if (peso <= 3) {
-                        g2.setColor(new Color(0, 255, 100));
-                    } else if (peso <= 7) {
-                        g2.setColor(new Color(255, 230, 0));
-                    } else {
-                        g2.setColor(new Color(255, 60, 60));
+                    double mx = (p1.x + p2.x) / 2.0;
+                    double my = (p1.y + p2.y) / 2.0;
+
+                    double dx = p2.x - p1.x;
+                    double dy = p2.y - p1.y;
+
+                    double len = Math.sqrt(dx * dx + dy * dy);
+
+                    if (len != 0) {
+                        double ux = dx / len;
+                        double uy = dy / len;
+
+                        double gap = 22;
+
+                        double gx1 = mx - ux * gap;
+                        double gy1 = my - uy * gap;
+
+                        double gx2 = mx + ux * gap;
+                        double gy2 = my + uy * gap;
+
+                        if (usarBezier) {
+                            double nx = -uy;
+                            double ny = ux;
+
+                            double curva = 55;
+
+                            double cx = mx + nx * curva;
+                            double cy = my + ny * curva;
+
+                            QuadCurve2D curvaBezier = new QuadCurve2D.Double(
+                                    p1.x, p1.y,
+                                    cx, cy,
+                                    p2.x, p2.y
+                            );
+
+                            g2.draw(curvaBezier);
+
+                        } else {
+                            g2.drawLine((int) p1.x, (int) p1.y, (int) gx1, (int) gy1);
+                            g2.drawLine((int) gx2, (int) gy2, (int) p2.x, (int) p2.y);
+                        }
+
+                        if (dirigido) {
+                            dibujarFlecha(g2, p1.x, p1.y, p2.x, p2.y);
+                        }
+
+                        dibujarPesoCentro(g2, mx, my, peso);
                     }
-
-                    float grosor = 2.0f + Math.min(peso, 10) * 0.35f;
-
-                    g2.setStroke(new BasicStroke(
-                            grosor,
-                            BasicStroke.CAP_ROUND,
-                            BasicStroke.JOIN_ROUND
-                    ));
                 }
 
-                double mx = (p1.x + p2.x) / 2.0;
-                double my = (p1.y + p2.y) / 2.0;
-
-                double dx = p2.x - p1.x;
-                double dy = p2.y - p1.y;
-
-                double len = Math.sqrt(dx * dx + dy * dy);
-
-                if (len == 0) continue;
-
-                double ux = dx / len;
-                double uy = dy / len;
-
-                double gap = 22;
-
-                double gx1 = mx - ux * gap;
-                double gy1 = my - uy * gap;
-
-                double gx2 = mx + ux * gap;
-                double gy2 = my + uy * gap;
-
-                if (usarBezier) {
-                    double nx = -uy;
-                    double ny = ux;
-
-                    double curva = 55;
-
-                    double cx = mx + nx * curva;
-                    double cy = my + ny * curva;
-
-                    QuadCurve2D curvaBezier = new QuadCurve2D.Double(
-                            p1.x, p1.y,
-                            cx, cy,
-                            p2.x, p2.y
-                    );
-
-                    g2.draw(curvaBezier);
-
-                } else {
-                    g2.drawLine((int) p1.x, (int) p1.y, (int) gx1, (int) gy1);
-                    g2.drawLine((int) gx2, (int) gy2, (int) p2.x, (int) p2.y);
-                }
-
-                dibujarPesoCentro(g2, mx, my, peso);
+                aux = aux.getSiguiente();
             }
-
-            aux = aux.getSiguiente();
         }
     }
-}
+    
+    private boolean debeDibujarArista(String origen, String destino) {
+        if (!dirigido) {
+            return origen.compareTo(destino) < 0;
+        }
+
+        TLista listaDestino = grafo.getListaAdy().get(destino);
+
+        if (listaDestino != null && listaDestino.buscar(origen)) {
+            return origen.compareTo(destino) < 0;
+        }
+
+        return true;
+    }
+
+    private void dibujarFlecha(Graphics2D g2, double x1, double y1, double x2, double y2) {
+        double angulo = Math.atan2(y2 - y1, x2 - x1);
+
+        double distanciaNodo = RADIO / 2.0 + 8;
+
+        double puntaX = x2 - Math.cos(angulo) * distanciaNodo;
+        double puntaY = y2 - Math.sin(angulo) * distanciaNodo;
+
+        int largo = 16;
+        int ancho = 8;
+
+        Polygon flecha = new Polygon();
+
+        flecha.addPoint((int) puntaX, (int) puntaY);
+
+        flecha.addPoint(
+                (int) (puntaX - largo * Math.cos(angulo) + ancho * Math.sin(angulo)),
+                (int) (puntaY - largo * Math.sin(angulo) - ancho * Math.cos(angulo))
+        );
+
+        flecha.addPoint(
+                (int) (puntaX - largo * Math.cos(angulo) - ancho * Math.sin(angulo)),
+                (int) (puntaY - largo * Math.sin(angulo) + ancho * Math.cos(angulo))
+        );
+
+        g2.fillPolygon(flecha);
+    }
 
     private void dibujarPesoCentro(Graphics2D g2, double x, double y, int peso) {
+        // peso centrado
         String texto = String.valueOf(peso);
 
         g2.setFont(new Font("Arial", Font.BOLD, 16));
@@ -614,7 +682,7 @@ public class PanelGrafo extends JPanel {
     }
 
     private void dibujarIndicadorModo(Graphics2D g2) {
-        String texto = modoMover ? "Modo mover: ACTIVADO" : "Modo mover: DESACTIVADO";
+        String texto = modoMover ? "Modo mover ACTIVADO" : "Modo mover DESACTIVADO";
 
         g2.setFont(new Font("Arial", Font.BOLD, 13));
         g2.setColor(tema.textoSecundario);
@@ -622,6 +690,7 @@ public class PanelGrafo extends JPanel {
     }
 
     private void dibujarMinimapa(Graphics2D g2) {
+        // mini mapa
         int w = 170;
         int h = 110;
         int x = getWidth() - w - 20;
