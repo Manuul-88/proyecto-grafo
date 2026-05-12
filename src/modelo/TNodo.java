@@ -1,22 +1,32 @@
-//TNodo 
 package modelo;
 
 public class TNodo {
     private String dato;
-    private TNodo sig;
     private int peso;
-    
+    private TNodo siguiente;
+
     public TNodo() {
-        dato = "";
-        sig = null;
+        this("", 0);
     }
-    
+
+    public TNodo(String dato) {
+        this(dato, 0);
+    }
+
     public TNodo(String dato, int peso) {
         this.dato = dato;
         this.peso = peso;
-        sig = null;
+        this.siguiente = null;
     }
-    
+
+    public String getDato() {
+        return dato;
+    }
+
+    public void setDato(String dato) {
+        this.dato = dato;
+    }
+
     public int getPeso() {
         return peso;
     }
@@ -24,30 +34,17 @@ public class TNodo {
     public void setPeso(int peso) {
         this.peso = peso;
     }
-    
-    public TNodo(String dato) {
-        this.dato = dato;
-        sig = null;
-    }
-
-    public void setDato(String dato) {
-        this.dato = dato;
-    }
-
-    public void setSiguiente(TNodo sig) {
-        this.sig = sig;
-    }
-
-    public String getDato() {
-        return dato;
-    }
 
     public TNodo getSiguiente() {
-        return sig;
+        return siguiente;
+    }
+
+    public void setSiguiente(TNodo siguiente) {
+        this.siguiente = siguiente;
     }
 
     @Override
     public String toString() {
-        return "Dato del nodo " + dato;
+        return dato + "(" + peso + ")";
     }
 }
