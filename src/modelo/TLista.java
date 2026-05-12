@@ -1,99 +1,73 @@
-//TLista
 package modelo;
 
 public class TLista {
-    private TNodo cab;
+    private final TNodo cabecera;
     private TNodo fin;
 
     public TLista() {
-        cab = new TNodo();
+        cabecera = new TNodo();
         fin = null;
     }
 
-    public boolean esVacia() {
-        return cab.getSiguiente() == null;
-    }
-
     public TNodo getCabecera() {
-        return cab;
+        return cabecera;
     }
 
-    public void insertarInicio(String dato) {
-        TNodo p = new TNodo(dato);
-
-        if (cab.getSiguiente() == null) {
-            fin = p;
-        }
-
-        p.setSiguiente(cab.getSiguiente());
-        cab.setSiguiente(p);
+    public boolean esVacia() {
+        return cabecera.getSiguiente() == null;
     }
 
     public void insertarFinal(String dato) {
-        TNodo p = new TNodo(dato);
-
-        if (fin == null) {
-            cab.setSiguiente(p);
-        } else {
-            fin.setSiguiente(p);
-        }
-
-        fin = p;
+        insertarFinal(dato, 0);
     }
 
     public void insertarFinal(String dato, int peso) {
-        TNodo p = new TNodo(dato, peso);
+        TNodo nuevo = new TNodo(dato, peso);
 
-        if (fin == null) {
-            cab.setSiguiente(p);
+        if (esVacia()) {
+            cabecera.setSiguiente(nuevo);
         } else {
-            fin.setSiguiente(p);
+            fin.setSiguiente(nuevo);
         }
 
-        fin = p;
+        fin = nuevo;
     }
 
     public boolean buscar(String dato) {
-        TNodo p = cab.getSiguiente();
-
-        while (p != null) {
-            if (p.getDato().equalsIgnoreCase(dato)) {
-                return true;
-            }
-
-            p = p.getSiguiente();
-        }
-
-        return false;
+        return obtenerNodo(dato) != null;
     }
 
-    public String cadenaLista() {
-        String cad = "";
-        TNodo p = cab.getSiguiente();
+    public int obtenerPeso(String dato) {
+        TNodo nodo = obtenerNodo(dato);
+        return nodo == null ? -1 : nodo.getPeso();
+    }
 
-        while (p != null) {
-            cad += p.getDato() + "(" + p.getPeso() + ")";
+    public boolean editarDato(String actual, String nuevo) {
+        TNodo nodo = obtenerNodo(actual);
+        if (nodo == null) return false;
 
-            if (p.getSiguiente() != null) {
-                cad += " -> ";
-            }
+        nodo.setDato(nuevo);
+        return true;
+    }
 
-            p = p.getSiguiente();
-        }
+    public boolean editarPeso(String dato, int nuevoPeso) {
+        TNodo nodo = obtenerNodo(dato);
+        if (nodo == null) return false;
 
-        return cad;
+        nodo.setPeso(nuevoPeso);
+        return true;
     }
 
     public boolean eliminar(String dato) {
-        TNodo anterior = cab;
-        TNodo actual = cab.getSiguiente();
+        TNodo anterior = cabecera;
+        TNodo actual = cabecera.getSiguiente();
 
         while (actual != null) {
             if (actual.getDato().equalsIgnoreCase(dato)) {
                 anterior.setSiguiente(actual.getSiguiente());
 
                 if (actual == fin) {
-                    fin = anterior == cab ? null : anterior;
+                    fin = anterior == cabecera ? null : anterior;
                 }
 
                 return true;
@@ -106,59 +80,46 @@ public class TLista {
         return false;
     }
 
-    public int obtenerPeso(String destino) {
-        TNodo p = cab.getSiguiente();
-
-        while (p != null) {
-            if (p.getDato().equalsIgnoreCase(destino)) {
-                return p.getPeso();
-            }
-
-            p = p.getSiguiente();
-        }
-
-        return -1;
-    }
-
     public int contar() {
-        int contador = 0;
-        TNodo p = cab.getSiguiente();
+        int total = 0;
+        TNodo actual = cabecera.getSiguiente();
 
-        while (p != null) {
-            contador++;
-            p = p.getSiguiente();
+        while (actual != null) {
+            total++;
+            actual = actual.getSiguiente();
         }
 
-        return contador;
+        return total;
     }
 
-    public boolean editarDato(String actual, String nuevo) {
-        TNodo p = cab.getSiguiente();
+    public String cadenaLista() {
+        StringBuilder sb = new StringBuilder();
+        TNodo actual = cabecera.getSiguiente();
 
-        while (p != null) {
-            if (p.getDato().equalsIgnoreCase(actual)) {
-                p.setDato(nuevo);
-                return true;
+        while (actual != null) {
+            sb.append(actual.getDato()).append("(").append(actual.getPeso()).append(")");
+
+            if (actual.getSiguiente() != null) {
+                sb.append(" -> ");
             }
 
-            p = p.getSiguiente();
+            actual = actual.getSiguiente();
         }
 
-        return false;
+        return sb.toString();
     }
 
-    public boolean editarPeso(String destino, int nuevoPeso) {
-        TNodo p = cab.getSiguiente();
+    private TNodo obtenerNodo(String dato) {
+        TNodo actual = cabecera.getSiguiente();
 
-        while (p != null) {
-            if (p.getDato().equalsIgnoreCase(destino)) {
-                p.setPeso(nuevoPeso);
-                return true;
+        while (actual != null) {
+            if (actual.getDato().equalsIgnoreCase(dato)) {
+                return actual;
             }
 
-            p = p.getSiguiente();
+            actual = actual.getSiguiente();
         }
 
-        return false;
+        return null;
     }
 }

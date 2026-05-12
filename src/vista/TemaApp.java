@@ -1,44 +1,18 @@
-//temas
 package vista;
 
 import java.awt.Color;
 
 public class TemaApp {
+    public final String nombre;
+    public final Color fondoVentana, fondoPanel, fondoCanvas;
+    public final Color textoPrincipal, textoSecundario;
+    public final Color boton, botonHover;
+    public final Color campoFondo, campoTexto;
+    public final Color nodo1, nodo2, arista;
 
-    public String nombre;
-
-    public Color fondoVentana;
-    public Color fondoPanel;
-    public Color fondoCanvas;
-
-    public Color textoPrincipal;
-    public Color textoSecundario;
-
-    public Color boton;
-    public Color botonHover;
-
-    public Color campoFondo;
-    public Color campoTexto;
-
-    public Color nodo1;
-    public Color nodo2;
-    public Color arista;
-
-    public TemaApp(
-            String nombre,
-            Color fondoVentana,
-            Color fondoPanel,
-            Color fondoCanvas,
-            Color textoPrincipal,
-            Color textoSecundario,
-            Color boton,
-            Color botonHover,
-            Color campoFondo,
-            Color campoTexto,
-            Color nodo1,
-            Color nodo2,
-            Color arista
-    ) {
+    private TemaApp(String nombre, Color fondoVentana, Color fondoPanel, Color fondoCanvas,
+                    Color textoPrincipal, Color textoSecundario, Color boton, Color botonHover,
+                    Color campoFondo, Color campoTexto, Color nodo1, Color nodo2, Color arista) {
         this.nombre = nombre;
         this.fondoVentana = fondoVentana;
         this.fondoPanel = fondoPanel;
@@ -55,116 +29,32 @@ public class TemaApp {
     }
 
     public static TemaApp obtenerTema(String nombre) {
+        if (nombre == null) return obtenerTema("Halo");
 
-        if (nombre.equals("Halo")) {
-            return new TemaApp(
-                    "Halo",
-                    new Color(8, 20, 18),
-                    new Color(18, 40, 36),
-                    new Color(5, 16, 18),
-                    new Color(220, 255, 235),
-                    new Color(120, 220, 190),
-                    new Color(45, 95, 75),
-                    new Color(70, 135, 100),
-                    new Color(12, 30, 28),
-                    new Color(220, 255, 235),
-                    new Color(80, 170, 120),
-                    new Color(20, 120, 160),
-                    new Color(120, 220, 190)
-            );
+        switch (nombre) {
+            case "DD":
+                return tema("DD", c(22,0,0), c(42,5,5), c(10,0,0), c(255,230,230), c(255,70,70), c(100,15,15), c(190,20,20), c(25,0,0), c(255,230,230), c(180,20,20), c(255,60,60), c(255,40,40));
+            case "Interestelar":
+                return tema("Interestelar", c(3,6,18), c(9,14,32), c(2,4,14), c(235,245,255), c(130,190,255), c(25,55,100), c(55,115,190), c(8,14,30), c(235,245,255), c(70,130,255), c(180,100,255), c(120,190,255));
+            case "Ego":
+                return tema("Ego", c(4,8,24), c(8,18,45), c(2,7,22), c(235,245,255), c(60,170,255), c(10,65,130), c(0,130,255), c(5,16,38), c(235,245,255), c(0,115,255), c(0,255,220), c(0,180,255));
+            case "GOT":
+                return tema("GOT", c(18,18,18), c(32,24,20), c(10,10,10), c(212,175,55), c(120,120,120), c(80,15,15), c(150,30,30), c(25,20,18), c(212,175,55), c(120,20,20), c(180,40,40), c(245,220,140));
+            case "Invencible":
+                return tema("Invencible", c(0,55,128), c(0,67,150), c(0,132,228), Color.BLACK, c(255,223,0), c(0,150,240), c(255,211,0), c(0,38,88), Color.WHITE, c(255,211,0), c(255,211,0), Color.BLACK);
+            default:
+                return tema("Halo", c(8,20,18), c(18,40,36), c(5,16,18), c(220,255,235), c(120,220,190), c(45,95,75), c(70,135,100), c(12,30,28), c(220,255,235), c(80,170,120), c(20,120,160), c(120,220,190));
         }
+    }
 
-        if (nombre.equals("DD")) {
-            return new TemaApp(
-                    "DD",
-                    new Color(22, 0, 0),
-                    new Color(42, 5, 5),
-                    new Color(10, 0, 0),
-                    new Color(255, 230, 230),
-                    new Color(255, 70, 70),
-                    new Color(100, 15, 15),
-                    new Color(190, 20, 20),
-                    new Color(25, 0, 0),
-                    new Color(255, 230, 230),
-                    new Color(180, 20, 20),
-                    new Color(255, 60, 60),
-                    new Color(255, 40, 40)
-            );
-        }
+    private static TemaApp tema(String nombre, Color fondoVentana, Color fondoPanel, Color fondoCanvas,
+                                Color textoPrincipal, Color textoSecundario, Color boton, Color botonHover,
+                                Color campoFondo, Color campoTexto, Color nodo1, Color nodo2, Color arista) {
+        return new TemaApp(nombre, fondoVentana, fondoPanel, fondoCanvas, textoPrincipal, textoSecundario,
+                boton, botonHover, campoFondo, campoTexto, nodo1, nodo2, arista);
+    }
 
-        if (nombre.equals("Interestelar")) {
-            return new TemaApp(
-                    "Interestelar",
-                    new Color(3, 6, 18),
-                    new Color(9, 14, 32),
-                    new Color(2, 4, 14),
-                    new Color(235, 245, 255),
-                    new Color(130, 190, 255),
-                    new Color(25, 55, 100),
-                    new Color(55, 115, 190),
-                    new Color(8, 14, 30),
-                    new Color(235, 245, 255),
-                    new Color(70, 130, 255),
-                    new Color(180, 100, 255),
-                    new Color(120, 190, 255)
-            );
-        }
-
-        if (nombre.equals("Ego")) {
-            return new TemaApp(
-                    "Ego",
-                    new Color(4, 8, 24),
-                    new Color(8, 18, 45),
-                    new Color(2, 7, 22),
-                    new Color(235, 245, 255),
-                    new Color(60, 170, 255),
-                    new Color(10, 65, 130),
-                    new Color(0, 130, 255),
-                    new Color(5, 16, 38),
-                    new Color(235, 245, 255),
-                    new Color(0, 115, 255),
-                    new Color(0, 255, 220),
-                    new Color(0, 180, 255)
-            );
-        }
-        
-        if (nombre.equals("GOT")) {
-            return new TemaApp(
-                    "GOT",
-                    new Color(18, 18, 18),
-                    new Color(32, 24, 20),
-                    new Color(10, 10, 10),
-                    new Color(212, 175, 55),
-                    new Color(120, 120, 120),
-                    new Color(80, 15, 15),
-                    new Color(150, 30, 30),
-                    new Color(25, 20, 18),
-                    new Color(212, 175, 55),
-                    new Color(120, 20, 20),
-                    new Color(180, 40, 40),
-                    new Color(245, 220, 140)
-            );
-        }
-              
-        if (nombre.equals("Invencible")) {
-    return new TemaApp(
-            "Invencible",
-
-            new Color(0, 55, 128),
-            new Color(0, 67, 150),
-            new Color(0, 132, 228),
-            Color.BLACK,
-            new Color(255, 223, 0),
-            new Color(0, 150, 240),
-            new Color(255, 211, 0),
-            new Color(0, 38, 88),
-            Color.WHITE,
-            new Color(255, 211, 0),
-            new Color(255, 211, 0),
-            Color.BLACK
-    );
-}
-    
-               return obtenerTema("Halo");
+    private static Color c(int r, int g, int b) {
+        return new Color(r, g, b);
     }
 }

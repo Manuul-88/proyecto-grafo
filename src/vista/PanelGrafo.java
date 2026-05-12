@@ -779,7 +779,5 @@ public class PanelGrafo extends JPanel {
         }
 
         return false;
-    }
-    
-    
+    }    
 }
