@@ -387,50 +387,38 @@ public class PanelGrafo extends JPanel {
                 g2.drawOval(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size);
             }
         }
+        
+        if (tema.nombre.equals("Invencible")) {
 
-        if (tema.nombre.equals("Neon")) {
-            g2.setColor(new Color(0, 255, 220, 50));
+            GradientPaint fondo = new GradientPaint(
+                    0, 0,
+                    new Color(0, 150, 240),
+                    getWidth(), getHeight(),
+                    new Color(0, 88, 185)
+            );
 
-            for (int y = 0; y < getHeight(); y += 38) {
+            g2.setPaint(fondo);
+
+            g2.fillRect(
+                    0,
+                    0,
+                    getWidth(),
+                    getHeight()
+            );
+
+            g2.setColor(new Color(0, 100, 185, 22));
+
+            for (int y = 0; y < getHeight(); y += 22) {
                 g2.drawLine(0, y, getWidth(), y);
             }
 
-            g2.setColor(new Color(180, 0, 255, 45));
-
-            for (int x = 0; x < getWidth(); x += 38) {
+            for (int x = 0; x < getWidth(); x += 22) {
                 g2.drawLine(x, 0, x, getHeight());
             }
-
-            g2.setColor(new Color(255, 255, 255, 80));
-
-            for (int i = 0; i < 50; i++) {
-                int x = (i * 89) % Math.max(getWidth(), 1);
-                int y = (i * 47) % Math.max(getHeight(), 1);
-                g2.fillOval(x, y, 2, 2);
-            }
         }
-
-        if (tema.nombre.equals("Cyberpunk")) {
-            g2.setColor(new Color(255, 0, 180, 65));
-
-            for (int y = 0; y < getHeight(); y += 45) {
-                g2.drawLine(0, y, getWidth(), y);
-            }
-
-            g2.setColor(new Color(0, 255, 255, 55));
-
-            for (int x = 0; x < getWidth(); x += 45) {
-                g2.drawLine(x, 0, x, getHeight());
-            }
-
-            g2.setColor(new Color(255, 240, 80, 50));
-
-            for (int x = -getHeight(); x < getWidth(); x += 120) {
-                g2.drawLine(x, getHeight(), x + getHeight(), 0);
-            }
-        }
+        
     }
-
+        
     private void dibujarAristas(Graphics2D g2) {
         for (Map.Entry<String, TLista> entry : grafo.getListaAdy().entrySet()) {
 
@@ -792,4 +780,6 @@ public class PanelGrafo extends JPanel {
 
         return false;
     }
+    
+    
 }
