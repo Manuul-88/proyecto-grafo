@@ -66,7 +66,7 @@ public class VentanaPrincipal extends JFrame {
         JLabel lblTema = new JLabel("Tema");
 
         JComboBox<String> comboTema = new JComboBox<>(new String[]{
-                "Halo", "DD", "Interestelar", "Ego", "Neon", "Cyberpunk"
+                "Halo", "DD", "Interestelar", "Ego", "GOT", "Invencible"
         });
 
         JCheckBox chkDirigido = new JCheckBox("Dirigido");

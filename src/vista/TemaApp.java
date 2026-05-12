@@ -127,43 +127,44 @@ public class TemaApp {
                     new Color(0, 180, 255)
             );
         }
-
-        if (nombre.equals("Neon")) {
+        
+        if (nombre.equals("GOT")) {
             return new TemaApp(
-                    "Neon",
-                    new Color(3, 3, 10),
-                    new Color(10, 12, 24),
-                    new Color(0, 0, 8),
-                    new Color(240, 255, 255),
-                    new Color(0, 255, 220),
-                    new Color(20, 30, 80),
-                    new Color(0, 255, 220),
-                    new Color(5, 8, 20),
-                    new Color(240, 255, 255),
-                    new Color(0, 255, 220),
-                    new Color(180, 0, 255),
-                    new Color(0, 255, 220)
+                    "GOT",
+                    new Color(18, 18, 18),
+                    new Color(32, 24, 20),
+                    new Color(10, 10, 10),
+                    new Color(212, 175, 55),
+                    new Color(120, 120, 120),
+                    new Color(80, 15, 15),
+                    new Color(150, 30, 30),
+                    new Color(25, 20, 18),
+                    new Color(212, 175, 55),
+                    new Color(120, 20, 20),
+                    new Color(180, 40, 40),
+                    new Color(245, 220, 140)
             );
         }
+              
+        if (nombre.equals("Invencible")) {
+    return new TemaApp(
+            "Invencible",
 
-        if (nombre.equals("Cyberpunk")) {
-            return new TemaApp(
-                    "Cyberpunk",
-                    new Color(14, 0, 28),
-                    new Color(32, 0, 50),
-                    new Color(8, 0, 20),
-                    new Color(255, 245, 90),
-                    new Color(0, 255, 255),
-                    new Color(120, 0, 120),
-                    new Color(255, 0, 180),
-                    new Color(22, 0, 38),
-                    new Color(255, 245, 90),
-                    new Color(255, 0, 180),
-                    new Color(0, 255, 255),
-                    new Color(255, 245, 90)
-            );
-        }
-
-        return obtenerTema("Halo");
+            new Color(0, 55, 128),
+            new Color(0, 67, 150),
+            new Color(0, 132, 228),
+            Color.BLACK,
+            new Color(255, 223, 0),
+            new Color(0, 150, 240),
+            new Color(255, 211, 0),
+            new Color(0, 38, 88),
+            Color.WHITE,
+            new Color(255, 211, 0),
+            new Color(255, 211, 0),
+            Color.BLACK
+    );
+}
+    
+               return obtenerTema("Halo");
     }
 }
