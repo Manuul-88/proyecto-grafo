@@ -17,6 +17,7 @@ public class TLista {
         return cabecera.getSiguiente() == null;
     }
 
+    
     public void insertarFinal(String dato) {
         insertarFinal(dato, 0);
     }

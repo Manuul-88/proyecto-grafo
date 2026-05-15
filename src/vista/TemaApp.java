@@ -46,7 +46,7 @@ public class TemaApp {
                 return tema("Halo", c(8,20,18), c(18,40,36), c(5,16,18), c(220,255,235), c(120,220,190), c(45,95,75), c(70,135,100), c(12,30,28), c(220,255,235), c(80,170,120), c(20,120,160), c(120,220,190));
         }
     }
-
+//prueba
     private static TemaApp tema(String nombre, Color fondoVentana, Color fondoPanel, Color fondoCanvas,
                                 Color textoPrincipal, Color textoSecundario, Color boton, Color botonHover,
                                 Color campoFondo, Color campoTexto, Color nodo1, Color nodo2, Color arista) {

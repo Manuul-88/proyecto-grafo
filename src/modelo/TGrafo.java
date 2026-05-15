@@ -50,6 +50,8 @@ public class TGrafo {
     public boolean agregaAristaPeso(String origen, String destino, int peso) {
         origen = normalizar(origen);
         destino = normalizar(destino);
+        
+    
 
         if (!aristaValida(origen, destino)) return false;
 
