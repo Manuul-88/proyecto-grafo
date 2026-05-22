@@ -33,7 +33,7 @@ public class VentanaPrincipal extends JFrame {
     public VentanaPrincipal() {
         grafo = new TGrafo();
 
-        setTitle("Calculadora de Grafos");
+        setTitle("Calculadora de Grafos ");
         setSize(1450, 850);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -56,9 +56,16 @@ public class VentanaPrincipal extends JFrame {
     private JPanel crearBarraSuperior() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
+        
+        lblTitulo = new JLabel(
+            "<html><center>" +
+            "Calculadora de Grafos<br>" +
+            "<span style='font-size:14px;'>por Manuel Silva Madrid y Erika Audrey Cárcamo Munguía</span>" +
+            "</center></html>"
+        );
 
-        lblTitulo = new JLabel("Calculadora de Grafos");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+        lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
 
         JPanel opciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         opciones.setOpaque(false);
@@ -66,7 +73,7 @@ public class VentanaPrincipal extends JFrame {
         JLabel lblTema = new JLabel("Tema");
 
         JComboBox<String> comboTema = new JComboBox<>(new String[]{
-                "Halo", "DD", "Interestelar", "Ego", "GOT", "Invencible"
+                "Halo", "DD", "Interestelar", "Ego", "GOT", "Invencible","Cyberpunk" 
         });
 
         JCheckBox chkDirigido = new JCheckBox("Dirigido");
