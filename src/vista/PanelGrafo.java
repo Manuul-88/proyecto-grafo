@@ -417,6 +417,48 @@ public class PanelGrafo extends JPanel {
             }
         }
         
+
+        if (tema.nombre.equals("Cyberpunk")) {
+            GradientPaint fondo = new GradientPaint(
+                    0, 0,
+                    new Color(12, 8, 28),
+                    getWidth(), getHeight(),
+                    new Color(35, 0, 55)
+            );
+
+            g2.setPaint(fondo);
+            g2.fillRect(0, 0, getWidth(), getHeight());
+
+            g2.setColor(new Color(255, 230, 0, 170));
+            g2.setStroke(new BasicStroke(3));
+
+            int w = getWidth();
+            int h = getHeight();
+
+            g2.drawLine(0, h - 90, 180, h);
+            g2.drawLine(45, h - 190, 290, h);
+
+            g2.drawLine(w - 260, 0, w, 150);
+            g2.drawLine(w - 420, 0, w, 240);
+
+            g2.drawLine(35, 35, 210, 35);
+            g2.drawLine(35, 35, 35, 105);
+
+            g2.drawLine(w - 230, h - 35, w - 35, h - 35);
+            g2.drawLine(w - 35, h - 120, w - 35, h - 35);
+
+            g2.setColor(new Color(255, 0, 180, 110));
+            g2.setStroke(new BasicStroke(2));
+
+            g2.drawLine(70, 70, 155, 70);
+            g2.drawLine(w - 180, 85, w - 75, 85);
+
+            g2.setColor(new Color(0, 255, 255, 80));
+            for (int y = 0; y < h; y += 32) {
+                g2.drawLine(0, y, w, y);
+            }
+        }
+        
     }
         
     private void dibujarAristas(Graphics2D g2) {
