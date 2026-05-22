@@ -126,6 +126,15 @@ public class PanelGrafo extends JPanel {
 
         repaint();
     }
+    
+
+    public void limpiarVisual() {
+        posiciones.clear();
+        velocidades.clear();
+        rutaResaltada.clear();
+        nodoSeleccionado = null;
+        repaint();
+    }
 
     private void configurarMouse() {
         addMouseListener(new MouseAdapter() {

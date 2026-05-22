@@ -221,7 +221,8 @@ public class VentanaPrincipal extends JFrame {
         JButton btnEliminarNodo = new JButton("Borrar Nodo");
         JButton btnEditarNodo = new JButton("Editar nodo");
         JButton btnContar = new JButton("Contar conexiones");
-
+        JButton btnLimpiarGrafo = new JButton("Limpiar grafo");
+        
         JPanel filaNodo = crearFila();
         filaNodo.add(new JLabel("Nodo"));
         filaNodo.add(txtNodo);
@@ -231,7 +232,8 @@ public class VentanaPrincipal extends JFrame {
 
         JPanel filaNodo2 = crearFila();
         filaNodo2.add(btnContar);
-
+        filaNodo2.add(btnLimpiarGrafo);
+        
         cardNodos.add(filaNodo, BorderLayout.NORTH);
         cardNodos.add(filaNodo2, BorderLayout.CENTER);
 
@@ -292,7 +294,8 @@ public class VentanaPrincipal extends JFrame {
         btnEliminarNodo.addActionListener(e -> eliminarNodo());
         btnEditarNodo.addActionListener(e -> editarNodo());
         btnContar.addActionListener(e -> contarConexiones());
-
+        btnLimpiarGrafo.addActionListener(e -> limpiarGrafo());
+        
         btnAgregarArista.addActionListener(e -> agregarArista());
         btnBorrarArco.addActionListener(e -> borrarArco());
         btnEditarPeso.addActionListener(e -> editarPeso());
@@ -653,4 +656,31 @@ public class VentanaPrincipal extends JFrame {
 
         txtAreaSalida.setText(resultado);
     }
+    
+    private void limpiarGrafo() {
+        int opcion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Seguro que quieres borrar todo el grafo?",
+                "Confirmar limpieza",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        grafo.limpiarGrafo();
+        panelDibujo.limpiarVisual();
+
+        txtNodo.setText("");
+        txtOrigen.setText("");
+        txtDestino.setText("");
+        txtInicioBPF.setText("");
+        txtDestinoAlgoritmo.setText("");
+        spnPeso.setValue(0);
+
+        txtAreaSalida.setText("Grafo limpiado correctamente");
+    }
+    
 }

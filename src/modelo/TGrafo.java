@@ -309,6 +309,10 @@ public class TGrafo {
     public LinkedHashMap<String, TLista> getListaAdy() {
         return listaAdy;
     }
+    public void limpiarGrafo() {
+        listaAdy.clear();
+    }
+    
     private boolean insertarAristaSimple(String origen, String destino, int peso) {
         if (listaAdy.get(origen).buscar(destino)) return false;
         listaAdy.get(origen).insertarFinal(destino, peso);
